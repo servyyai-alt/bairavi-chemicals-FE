@@ -3,32 +3,104 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FiArrowRight, FiShield, FiTruck, FiAward, FiPhone, FiCheckCircle, FiStar, FiZap } from 'react-icons/fi';
 import { getProducts, getCategories } from '../services/api';
 import ProductCard from '../components/common/ProductCard';
+import productsHero from "../assets/products-hero.png";
+import detergentImg from "../assets/detergent.png";
+import industrialImg from "../assets/industrial.png";
+import waterImg from "../assets/water.png";
+import labImg from "../assets/lab.png";
+import cleanersImg from "../assets/cleaning.png";
+import solventImg from "../assets/solvents.png";
+import rawImg from "../assets/raw.png";
+import specialityImg from "../assets/speciality.png";
+import whyUsImg from "../assets/company.png";
 
 /* ── Constants ────────────────────────────────────────────────────────── */
 const CATEGORIES = [
-  { name: 'Industrial Chemicals',  icon: '🏭', slug: 'industrial-chemicals',  color: '#0B4F9C' },
-  { name: 'Laboratory Chemicals',  icon: '🔬', slug: 'laboratory-chemicals',  color: '#0d9488' },
-  { name: 'Water Treatment',       icon: '💧', slug: 'water-treatment',       color: '#0ea5e9' },
-  { name: 'Cleaning Chemicals',    icon: '✨', slug: 'cleaning-chemicals',    color: '#7c3aed' },
-  { name: 'Solvents',              icon: '🫙', slug: 'solvents',              color: '#d97706' },
-  { name: 'Acids & Alkalis',       icon: '⚗️', slug: 'acids-alkalis',        color: '#dc2626' },
-  { name: 'Specialty Chemicals',   icon: '🔮', slug: 'specialty-chemicals',   color: '#6366f1' },
-  { name: 'Raw Materials',         icon: '📦', slug: 'raw-materials',         color: '#16a34a' },
-];
+
+{
+name:"Industrial Chemicals",
+slug:"industrial",
+image:industrialImg
+},
+
+{
+name:"Laboratory Chemicals",
+slug:"lab",
+image:labImg
+},
+
+{
+name:"Water Treatment",
+slug:"water",
+image:waterImg
+},
+
+{
+name:"Cleaning Chemicals",
+slug:"cleaning",
+image:cleanersImg
+},
+
+{
+name:"Detergent Solutions",
+slug:"detergent",
+image:detergentImg
+},
+
+{
+name:"Solvents",
+slug:"solvents",
+image:solventImg
+},
+
+{
+name:"Raw Materials",
+slug:"raw",
+image:rawImg
+},
+
+{
+name:"Speciality Chemicals",
+slug:"speciality",
+image:specialityImg
+}
+
+]
 
 const STATS = [
-  { value: '500+', label: 'Chemical Products', icon: '🧪' },
-  { value: '1,200+', label: 'Happy Clients', icon: '🏢' },
-  { value: '15+', label: 'Years of Trust', icon: '🏆' },
-  { value: '98%', label: 'On-time Delivery', icon: '🚚' },
+  { value:'500+', label:'Chemical Products'},
+  { value:'1,200+', label:'Happy Clients'},
+  { value:'15+', label:'Years of Trust'},
+  { value:'98%', label:'On-time Delivery'}
 ];
 
 const FEATURES = [
-  { icon: '✅', title: 'ISO 9001 Certified', desc: 'Every batch tested with Certificate of Analysis (COA) provided on request.' },
-  { icon: '🚚', title: 'Reliable Pan-India Delivery', desc: 'Proper chemical packaging, labelling, and documentation for every shipment.' },
-  { icon: '💬', title: 'Expert Technical Support', desc: 'Guidance on chemical selection, application suitability, and safety handling.' },
-  { icon: '📦', title: 'Flexible Packaging', desc: 'Bags, drums, IBC tanks, canisters — customised to your requirement.' },
-];
+
+{
+title:"ISO Certified Quality",
+desc:
+"Every batch tested and supplied with proper quality assurance."
+},
+
+{
+title:"Reliable Pan-India Delivery",
+desc:
+"Safe packaging and timely delivery across industries."
+},
+
+{
+title:"Technical Support",
+desc:
+"Guidance on chemical selection, applications and handling."
+},
+
+{
+title:"Flexible Packaging",
+desc:
+"Drums, bags, canisters and bulk packaging as required."
+}
+
+]
 
 const TESTIMONIALS = [
   { name: 'Ramesh Kumar', company: 'Apex Textiles Ltd', rating: 5, initial: 'R', text: 'Consistent quality and timely delivery. Sri Bairavi is our go-to supplier for industrial chemicals.' },
@@ -142,174 +214,495 @@ export default function HomePage() {
     <div className="min-h-screen">
 
       {/* ── HERO ─────────────────────────────────────────────────────── */}
-      <section className="relative min-h-[640px] flex items-center overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #020f1e 0%, #06091a 40%, #041f3d 100%)' }}>
+   <section className="
+relative
+overflow-hidden
+bg-gradient-to-br
+from-[#F8FCFF]
+via-white
+to-[#EEF7FF]
+min-h-screen
+flex
+items-center">
 
-        {/* Grid texture */}
-        <div className="absolute inset-0 bg-grid-white bg-grid opacity-100" />
+{/* Background blur */}
 
-        {/* Radial glow orbs */}
-        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(11,79,156,0.35) 0%, transparent 70%)' }} />
-        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(34,197,94,0.15) 0%, transparent 70%)' }} />
+<div className="
+absolute
+top-0
+right-0
+w-[500px]
+h-[500px]
+bg-blue-100
+blur-[140px]
+rounded-full
+opacity-40"/>
 
-        <HeroParticles />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 py-24 grid md:grid-cols-2 gap-16 items-center">
+<div className="
+absolute
+bottom-0
+left-0
+w-[400px]
+h-[400px]
+bg-green-100
+blur-[120px]
+rounded-full
+opacity-40"/>
 
-          {/* Left text */}
-          <div className="animate-fade-in">
-            {/* Pill tag */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8 text-xs font-bold tracking-widest uppercase"
-              style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.25)', color: '#22c55e' }}>
-              <span className="w-1.5 h-1.5 rounded-full bg-accent-green animate-pulse" />
-              Trusted Since 2009 · ISO 9001 Certified
-            </div>
 
-            <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6"
-              style={{ letterSpacing: '-0.04em', lineHeight: 1.05 }}>
-              Quality<br />
-              <span style={{
-                background: 'linear-gradient(135deg, #4d90ff, #22c55e)',
-                WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-              }}>Chemicals,</span><br />
-              Trusted Solutions
-            </h1>
 
-            <p className="text-lg leading-relaxed mb-10 max-w-lg"
-              style={{ color: 'rgba(255,255,255,0.6)' }}>
-              Industrial, Laboratory, and Specialty Chemical Solutions for Modern Industries.
-              Pan-India delivery with certified quality assurance.
-            </p>
+<div className="
+max-w-7xl
+mx-auto
+px-6
+grid
+lg:grid-cols-2
+gap-14
+items-center">
 
-            {/* CTAs */}
-            <div className="flex flex-wrap gap-4 mb-10">
-              <button onClick={() => navigate('/products')} className="btn-primary !py-3.5 !px-8">
-                <span className="flex items-center gap-2">Explore Products <FiArrowRight /></span>
-              </button>
-              <button onClick={() => navigate('/contact')} className="btn-ghost !py-3.5 !px-8">
-                <span className="flex items-center gap-2"><FiPhone className="w-4 h-4" /> Get Quotation</span>
-              </button>
-            </div>
 
-            {/* Trust row */}
-            <div className="flex flex-wrap gap-x-6 gap-y-2">
-              {['GMP Compliant', 'MSDS Provided', 'Bulk Orders Welcome'].map(t => (
-                <span key={t} className="flex items-center gap-2 text-sm" style={{ color: 'rgba(255,255,255,0.5)' }}>
-                  <FiCheckCircle className="w-4 h-4" style={{ color: '#22c55e' }} /> {t}
-                </span>
-              ))}
-            </div>
-          </div>
 
-          {/* Right: floating cards */}
-          <div className="hidden md:grid grid-cols-2 gap-4 animate-slide-up">
-            {[
-              { emoji: '⚗️', label: 'Industrial Grade', sub: '99%+ purity assured', glow: '#0B4F9C' },
-              { emoji: '🔬', label: 'Lab Reagents',     sub: 'Analytical & reagent', glow: '#0d9488' },
-              { emoji: '💧', label: 'Water Treatment',  sub: 'Plant-grade solutions', glow: '#0ea5e9' },
-              { emoji: '🛡️', label: 'Safety Certified', sub: 'MSDS on every order',  glow: '#22c55e' },
-            ].map((c, i) => (
-              <div key={i} className="p-5 rounded-3xl text-center transition-all duration-500 cursor-default"
-                style={{
-                  background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid rgba(255,255,255,0.09)',
-                  backdropFilter: 'blur(16px)',
-                  animationDelay: `${i * 0.1}s`,
-                }}
-                onMouseEnter={e => { e.currentTarget.style.border = `1px solid ${c.glow}40`; e.currentTarget.style.boxShadow = `0 0 30px ${c.glow}20`; }}
-                onMouseLeave={e => { e.currentTarget.style.border = '1px solid rgba(255,255,255,0.09)'; e.currentTarget.style.boxShadow = 'none'; }}>
-                <div className="text-4xl mb-3 animate-float" style={{ animationDelay: `${i * 0.8}s` }}>{c.emoji}</div>
-                <div className="text-white font-semibold text-sm font-display">{c.label}</div>
-                <div className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.45)' }}>{c.sub}</div>
-              </div>
-            ))}
-          </div>
-        </div>
+{/* LEFT */}
 
-        {/* Bottom wave */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0,40 C360,80 1080,0 1440,40 L1440,60 L0,60 Z" fill="#f8faff" />
-          </svg>
-        </div>
-      </section>
+<div>
 
-      {/* ── TRUST STRIP ─────────────────────────────────────────────── */}
-      <section className="py-5 bg-white border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 divide-x divide-gray-100">
-            {[
-              { icon: <FiTruck className="w-5 h-5" />, text: 'Pan-India Delivery', sub: 'Reliable bulk logistics' },
-              { icon: <FiShield className="w-5 h-5" />, text: 'ISO 9001 Certified', sub: 'Verified quality processes' },
-              { icon: <FiAward className="w-5 h-5" />, text: '15+ Years Experience', sub: 'Industry specialists' },
-              { icon: <FiZap className="w-5 h-5" />, text: '500+ Chemicals', sub: 'Comprehensive catalogue' },
-            ].map((b, i) => (
-              <div key={i} className="flex items-center gap-3 justify-center px-4 py-3">
-                <div className="w-9 h-9 rounded-xl flex-shrink-0 flex items-center justify-center"
-                  style={{ background: 'rgba(11,79,156,0.08)', color: '#0B4F9C' }}>
-                  {b.icon}
-                </div>
-                <div>
-                  <div className="text-sm font-semibold text-slate-800">{b.text}</div>
-                  <div className="text-xs text-slate-400">{b.sub}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+<div className="
+inline-flex
+px-5 py-2
+rounded-full
+bg-green-50
+border
+border-green-200
+text-green-700
+font-medium">
+
+Trusted Since 2009 • ISO Certified
+
+</div>
+
+
+
+<h1 className="
+mt-8
+text-6xl
+lg:text-8xl
+font-bold
+leading-tight">
+
+<span className="text-[#003B7A]">
+
+Sri Bairavi
+
+</span>
+
+<br/>
+
+<span className="text-[#003B7A]">
+
+Chemical
+
+</span>
+
+<br/>
+
+<span className="text-[#4E9A2D]">
+
+Solutions
+
+</span>
+
+</h1>
+
+
+
+<p className="
+mt-8
+text-gray-600
+text-lg
+leading-9
+max-w-xl">
+
+Manufacturing premium detergent
+liquids, cleaning chemicals and
+industrial solutions with certified
+quality and bulk supply across India.
+
+</p>
+
+
+
+{/* Buttons */}
+
+<div className="flex gap-5 mt-10">
+
+{/* Request Quote */}
+
+<Link
+to="/contact"
+className="
+bg-[#0056A6]
+text-white
+px-8
+py-4
+rounded-xl
+font-medium
+hover:bg-[#00458a]
+hover:scale-105
+duration-300
+inline-flex
+items-center">
+
+Request Quote
+
+</Link>
+
+
+
+{/* View Products */}
+
+<Link
+to="/products"
+className="
+border
+border-[#0056A6]
+text-[#0056A6]
+px-8
+py-4
+rounded-xl
+font-medium
+hover:bg-[#0056A6]
+hover:text-white
+duration-300
+inline-flex
+items-center">
+
+View Products
+
+</Link>
+
+
+</div>
+
+
+
+
+{/* Stats */}
+
+<div className="
+flex
+gap-10
+mt-16
+flex-wrap">
+
+
+<div>
+
+<h2 className="
+text-4xl
+font-bold
+text-[#003B7A]">
+
+15+
+
+</h2>
+
+<p className="text-gray-500">
+
+Years Experience
+
+</p>
+
+</div>
+
+
+
+
+<div>
+
+<h2 className="
+text-4xl
+font-bold
+text-[#003B7A]">
+
+500+
+
+</h2>
+
+<p className="text-gray-500">
+
+Products
+
+</p>
+
+</div>
+
+
+
+
+<div>
+
+<h2 className="
+text-4xl
+font-bold
+text-[#003B7A]">
+
+300+
+
+</h2>
+
+<p className="text-gray-500">
+
+Clients
+
+</p>
+
+</div>
+
+
+
+<div>
+
+<h2 className="
+text-4xl
+font-bold
+text-[#003B7A]">
+
+24/7
+
+</h2>
+
+<p className="text-gray-500">
+
+Support
+
+</p>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+
+
+
+{/* RIGHT */}
+
+<div className="relative">
+
+
+<img
+src={productsHero}
+alt=""
+className="
+w-full
+object-contain
+drop-shadow-2xl
+animate-float"
+/>
+
+
+
+{/* Floating card */}
+
+<div className="
+absolute
+top-10
+left-0
+bg-white
+shadow-xl
+rounded-2xl
+px-6 py-4">
+
+<p className="
+font-semibold
+text-[#003B7A]">
+
+Premium Detergents
+
+</p>
+
+<p className="
+text-sm
+text-gray-500">
+
+Bulk Manufacturing
+
+</p>
+
+</div>
+
+
+
+
+<div className="
+absolute
+bottom-10
+right-0
+bg-white
+shadow-xl
+rounded-2xl
+px-6 py-4">
+
+<p className="
+font-semibold
+text-[#003B7A]">
+
+Industrial Chemicals
+
+</p>
+
+<p className="
+text-sm
+text-gray-500">
+
+Pan India Supply
+
+</p>
+
+</div>
+
+
+</div>
+
+
+</div>
+
+</section>
+
+
 
       {/* ── CATEGORIES ──────────────────────────────────────────────── */}
-      <section className="section" style={{ background: '#f8faff' }}>
-        <div className="container-xl">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
-            <div>
-              <span className="section-label mb-3 block">Our Catalogue</span>
-              <h2 className="section-title">Browse by Category</h2>
-            </div>
-            <Link to="/products" className="btn-outline self-start md:self-auto !py-2.5 !px-6 !text-sm whitespace-nowrap">
-              View All <FiArrowRight className="inline ml-1" />
-            </Link>
-          </div>
+     <section
+className="py-24 bg-[#F8FCFF]">
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {(categories.length > 0 ? categories : CATEGORIES).slice(0, 8).map((cat, i) => {
-              const meta = CATEGORIES.find(c => c.name === cat.name) || CATEGORIES[i % CATEGORIES.length];
-              return (
-                <Link key={cat._id || i}
-                  to={`/products?category=${cat._id || cat.slug}`}
-                  className="group relative overflow-hidden flex flex-col items-center text-center p-6 rounded-3xl transition-all duration-350"
-                  style={{ background: 'white', border: '1px solid rgba(11,79,156,0.07)', boxShadow: '0 4px 24px rgba(0,0,0,0.04)' }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.transform = 'translateY(-6px)';
-                    e.currentTarget.style.borderColor = `${meta.color}30`;
-                    e.currentTarget.style.boxShadow = `0 20px 48px ${meta.color}18`;
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.transform = '';
-                    e.currentTarget.style.borderColor = 'rgba(11,79,156,0.07)';
-                    e.currentTarget.style.boxShadow = '0 4px 24px rgba(0,0,0,0.04)';
-                  }}>
-                  {/* Icon circle */}
-                  <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-4 transition-transform duration-300 group-hover:scale-110"
-                    style={{ background: `${meta.color}12` }}>
-                    {cat.icon || meta.icon}
-                  </div>
-                  <h3 className="font-display font-semibold text-sm text-slate-800 group-hover:text-primary-600 transition-colors leading-tight">
-                    {cat.name}
-                  </h3>
-                  {/* Hover arrow */}
-                  <div className="mt-2 opacity-0 group-hover:opacity-100 transition-all duration-200 translate-y-1 group-hover:translate-y-0">
-                    <FiArrowRight className="w-4 h-4 mx-auto" style={{ color: meta.color }} />
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+<div className="max-w-7xl mx-auto px-6">
+
+<div className="
+flex
+justify-between
+items-end
+mb-12">
+
+<div>
+
+<p className="
+text-[#4E9A2D]
+font-medium">
+
+Our Products
+
+</p>
+
+<h2 className="
+text-5xl
+font-bold
+text-[#003B7A]">
+
+Browse Categories
+
+</h2>
+
+</div>
+
+
+<Link
+to="/products"
+className="
+text-[#0056A6]
+font-medium">
+
+View All →
+
+</Link>
+
+</div>
+
+
+
+<div className="
+grid
+md:grid-cols-4
+gap-6">
+
+{
+
+CATEGORIES.map((cat)=>(
+
+<Link
+
+to={`/products?category=${cat.slug}`}
+
+className="
+group
+rounded-3xl
+overflow-hidden
+bg-white
+shadow-sm
+hover:shadow-2xl
+duration-300">
+
+<div className="
+overflow-hidden
+h-[220px]">
+
+<img
+
+src={cat.image}
+
+alt=""
+
+className="
+w-full
+h-full
+object-cover
+group-hover:scale-110
+duration-500"
+
+/>
+
+</div>
+
+
+
+<div className="p-5">
+
+<h3 className="
+font-semibold
+text-lg
+text-[#003B7A]">
+
+{cat.name}
+
+</h3>
+
+
+<p className="
+text-gray-500
+text-sm
+mt-2">
+
+View Products
+
+</p>
+
+</div>
+
+
+</Link>
+
+))
+
+}
+
+</div>
+
+</div>
+
+</section>
 
       {/* ── FEATURED PRODUCTS ────────────────────────────────────────── */}
       <section className="section bg-white">
@@ -344,69 +737,311 @@ export default function HomePage() {
       </section>
 
       {/* ── STATS ────────────────────────────────────────────────────── */}
-      <section className="section-sm relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #020f1e 0%, #083B73 50%, #0B4F9C 100%)' }}>
-        <div className="absolute inset-0 bg-grid-white bg-grid opacity-100" />
-        <div className="absolute inset-0" style={{ background: 'radial-gradient(circle at center, rgba(34,197,94,0.08) 0%, transparent 70%)' }} />
-        <div className="relative z-10 max-w-5xl mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-6">
-            {STATS.map((s, i) => <Counter key={i} {...s} />)}
-          </div>
-        </div>
-      </section>
+    <section
+className="
+relative
+overflow-hidden
+py-24"
+
+style={{
+background:
+"linear-gradient(135deg,#021327 0%,#003B7A 50%,#0056A6 100%)"
+}}>
+
+{/* Grid background */}
+
+<div className="
+absolute
+inset-0
+opacity-10
+bg-[linear-gradient(rgba(255,255,255,.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.1)_1px,transparent_1px)]
+bg-[size:40px_40px]"
+/>
+
+
+
+<div className="
+max-w-7xl
+mx-auto
+px-6
+relative
+z-10">
+
+
+<div className="
+text-center
+mb-16">
+
+<p className="
+text-green-400
+font-medium">
+
+Trusted Across Industries
+
+</p>
+
+
+<h2 className="
+text-5xl
+font-bold
+text-white
+mt-3">
+
+Numbers Speak Quality
+
+</h2>
+
+</div>
+
+
+
+
+<div className="
+grid
+grid-cols-2
+md:grid-cols-4
+gap-8">
+
+{
+
+STATS.map((item,index)=>(
+
+<div
+
+key={index}
+
+className="
+bg-white/5
+backdrop-blur-sm
+border
+border-white/10
+rounded-3xl
+p-8
+text-center
+hover:-translate-y-3
+duration-300
+hover:border-green-400/30">
+
+
+
+<h2 className="
+text-5xl
+font-bold
+text-white">
+
+{item.value}
+
+</h2>
+
+
+
+<div className="
+w-14
+h-[3px]
+bg-[#4E9A2D]
+mx-auto
+my-5"/>
+
+
+
+<p className="
+text-gray-300
+text-lg">
+
+{item.label}
+
+</p>
+
+
+</div>
+
+))
+
+}
+
+</div>
+
+</div>
+
+</section>
 
       {/* ── WHY CHOOSE US ────────────────────────────────────────────── */}
-      <section className="section" style={{ background: '#f8faff' }}>
-        <div className="container-xl">
-          <div className="grid md:grid-cols-2 gap-16 items-center">
-            {/* Left */}
-            <div>
-              <span className="section-label mb-4 block">Why Us</span>
-              <h2 className="section-title mb-6">Built on Quality,<br />Backed by Expertise</h2>
-              <p className="text-slate-500 leading-relaxed mb-10">
-                With over 15 years serving industries across India, Sri Bairavi Chemicals delivers consistent quality,
-                competitive pricing, and reliable supply you can count on.
-              </p>
-              <div className="space-y-5">
-                {FEATURES.map((f, i) => (
-                  <div key={i} className="flex gap-4 group">
-                    <div className="flex-shrink-0 w-11 h-11 rounded-2xl flex items-center justify-center text-xl transition-transform duration-300 group-hover:scale-110"
-                      style={{ background: 'white', boxShadow: '0 4px 20px rgba(11,79,156,0.1)' }}>
-                      {f.icon}
-                    </div>
-                    <div>
-                      <h4 className="font-display font-semibold text-slate-800 mb-0.5">{f.title}</h4>
-                      <p className="text-sm text-slate-500 leading-relaxed">{f.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <Link to="/contact" className="btn-primary inline-flex mt-10">
-                <span className="flex items-center gap-2">Get Bulk Quotation <FiArrowRight /></span>
-              </Link>
-            </div>
+     <section
+className="py-24 bg-[#F8FCFF]">
 
-            {/* Right: grid of highlight cards */}
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                { label: 'Chemical Products', value: '500+', icon: '🧪', color: '#0B4F9C' },
-                { label: 'Active Clients',    value: '1,200+', icon: '🏢', color: '#0d9488' },
-                { label: 'States Covered',    value: '28+',  icon: '🗺️', color: '#d97706' },
-                { label: 'Years of Trust',    value: '15+',  icon: '🏆', color: '#7c3aed' },
-              ].map((s, i) => (
-                <div key={i} className="group p-6 rounded-3xl text-center transition-all duration-300 cursor-default"
-                  style={{ background: 'white', border: '1px solid rgba(11,79,156,0.07)', boxShadow: '0 4px 24px rgba(0,0,0,0.04)' }}
-                  onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.04)'; e.currentTarget.style.boxShadow = `0 16px 48px ${s.color}20`; e.currentTarget.style.borderColor = `${s.color}25`; }}
-                  onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = '0 4px 24px rgba(0,0,0,0.04)'; e.currentTarget.style.borderColor = 'rgba(11,79,156,0.07)'; }}>
-                  <div className="text-3xl mb-3">{s.icon}</div>
-                  <div className="font-display text-3xl font-bold mb-1" style={{ color: s.color }}>{s.value}</div>
-                  <div className="text-sm text-slate-400">{s.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+<div className="
+max-w-7xl
+mx-auto
+px-6
+grid
+lg:grid-cols-2
+gap-20
+items-center">
+
+
+{/* LEFT */}
+
+<div>
+
+<p className="
+text-[#4E9A2D]
+font-medium
+mb-4">
+
+Why Choose Us
+
+</p>
+
+
+<h2 className="
+text-5xl
+font-bold
+text-[#003B7A]
+leading-tight">
+
+Built on Quality,
+<br/>
+
+Backed by Expertise
+
+</h2>
+
+
+
+<p className="
+mt-8
+text-gray-600
+leading-8">
+
+With years of experience,
+Sri Bairavi Chemicals supplies
+industrial and speciality chemicals
+with quality assurance, competitive pricing
+and dependable delivery.
+
+</p>
+
+
+
+<div className="
+space-y-8
+mt-10">
+
+{
+
+FEATURES.map((item,index)=>(
+
+<div
+key={index}
+className="
+border-l-4
+border-[#4E9A2D]
+pl-5">
+
+<h4 className="
+font-semibold
+text-xl
+text-[#003B7A]">
+
+{item.title}
+
+</h4>
+
+<p className="
+text-gray-500
+mt-2">
+
+{item.desc}
+
+</p>
+
+</div>
+
+))
+
+}
+
+</div>
+
+
+
+
+<Link
+to="/contact"
+className="
+inline-block
+mt-10
+bg-[#0056A6]
+text-white
+px-8 py-4
+rounded-xl">
+
+Get Bulk Quotation
+
+</Link>
+
+
+</div>
+
+
+
+
+
+{/* RIGHT IMAGE */}
+
+<div className="relative">
+
+<img
+
+src={whyUsImg}
+
+alt=""
+
+className="
+rounded-[40px]
+shadow-2xl
+w-full
+object-cover"
+
+/>
+
+
+
+{/* Floating Card */}
+
+<div className="
+absolute
+bottom-8
+left-8
+bg-white
+rounded-3xl
+shadow-xl
+px-8 py-5">
+
+<h3 className="
+text-4xl
+font-bold
+text-[#003B7A]">
+
+15+
+
+</h3>
+
+<p className="
+text-gray-500">
+
+Years Experience
+
+</p>
+
+</div>
+
+</div>
+
+
+</div>
+
+</section>
 
       {/* ── TESTIMONIALS ─────────────────────────────────────────────── */}
       <section className="section bg-white">
