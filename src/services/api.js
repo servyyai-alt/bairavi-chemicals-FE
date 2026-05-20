@@ -14,7 +14,9 @@ API.interceptors.request.use(config => {
 API.interceptors.response.use(
   res => res,
   err => {
-    if (err.response?.status === 401) {
+    const requestUrl = err.config?.url || '';
+
+    if (err.response?.status === 401 && requestUrl.includes('/auth/profile')) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = '/login';
@@ -47,6 +49,10 @@ export const createCategory = (data) => API.post('/categories', data);
 export const updateCategory = (id, data) => API.put(`/categories/${id}`, data);
 export const deleteCategory = (id) => API.delete(`/categories/${id}`);
 
+// Store Settings
+export const getStoreSettings = () => API.get('/settings');
+export const updateStoreSettings = (data) => API.put('/settings', data);
+
 // Cart
 export const getCart = () => API.get('/cart');
 export const addToCart = (data) => API.post('/cart', data);
@@ -64,6 +70,7 @@ export const verifyPayment = (data) => API.post('/orders/verify-payment', data);
 export const getMyOrders = () => API.get('/orders/my-orders');
 export const getOrderById = (id) => API.get(`/orders/${id}`);
 export const cancelMyOrder = (id) => API.put(`/orders/${id}/cancel`);
+export const deleteMyOrder = (id) => API.delete(`/orders/${id}`);
 export const getAllOrders = () => API.get('/orders/admin/all');
 export const updateOrderStatus = (id, data) => API.put(`/orders/${id}/status`, data);
 export const getDashboardStats = () => API.get('/orders/admin/dashboard');

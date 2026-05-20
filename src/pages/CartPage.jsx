@@ -1,13 +1,34 @@
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiMinus, FiPlus, FiTrash2, FiShoppingBag, FiArrowRight } from 'react-icons/fi';
 import { useCart } from '../context/CartContext';
+import { getStoreSettings } from '../services/api';
 
 export default function CartPage() {
-  const { cart, updateItem, removeItem, clearCart } = useCart();
+  const { cart, removeItem, clearCart, increaseQty, decreaseQty } = useCart();
   const navigate = useNavigate();
+  const [storeSettings, setStoreSettings] = useState({
+    gstPercentage: 18,
+    shippingCharge: 49,
+    freeShippingAbove: 499
+  });
 
-  const shipping = cart.totalAmount > 499 ? 0 : 49;
-  const tax = Math.round(cart.totalAmount * 0.05);
+  useEffect(() => {
+    getStoreSettings()
+      .then(({ data }) => {
+        setStoreSettings(data.settings || {
+          gstPercentage: 18,
+          shippingCharge: 49,
+          freeShippingAbove: 499
+        });
+      })
+      .catch(() => {});
+  }, []);
+
+  const shipping = cart.totalAmount >= Number(storeSettings.freeShippingAbove || 0)
+    ? 0
+    : Number(storeSettings.shippingCharge || 0);
+  const tax = Math.round(cart.totalAmount * (Number(storeSettings.gstPercentage || 0) / 100));
   const total = cart.totalAmount + shipping + tax;
 
   if (!cart.items?.length) return (
@@ -73,7 +94,11 @@ export default function CartPage() {
       </Link>
 
       <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
-        ₹{item.price} / {item.product?.unit}
+        Size: {item.selectedSize}
+      </p>
+
+      <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+        ₹{item.price}
       </p>
 
       <p className="text-primary-600 font-bold mt-1 text-sm sm:text-base">
@@ -88,7 +113,7 @@ export default function CartPage() {
     {/* Quantity */}
     <div className="flex items-center border border-gray-200 rounded-xl overflow-hidden">
       <button
-        onClick={() => updateItem(item._id, item.quantity - 1)}
+        onClick={() => decreaseQty(item.product?._id, item.selectedSize)}
         className="px-3 py-2 hover:bg-gray-50 transition-colors text-gray-600"
       >
         <FiMinus className="w-3.5 h-3.5" />
@@ -99,7 +124,7 @@ export default function CartPage() {
       </span>
 
       <button
-        onClick={() => updateItem(item._id, item.quantity + 1)}
+        onClick={() => increaseQty(item.product?._id, item.selectedSize)}
         className="px-3 py-2 hover:bg-gray-50 transition-colors text-gray-600"
       >
         <FiPlus className="w-3.5 h-3.5" />
@@ -134,12 +159,12 @@ export default function CartPage() {
                 </span>
               </div>
               <div className="flex justify-between text-gray-600">
-                <span>Tax (5%)</span>
+                <span>Tax ({storeSettings.gstPercentage || 0}%)</span>
                 <span>₹{tax}</span>
               </div>
               {shipping > 0 && (
                 <p className="text-xs text-accent-500 bg-accent-50 rounded-lg px-3 py-2">
-                  Add ₹{(499 - cart.totalAmount).toFixed(0)} more for free shipping!
+                  Add ₹{Math.max(0, Number(storeSettings.freeShippingAbove || 0) - cart.totalAmount).toFixed(0)} more for free shipping!
                 </p>
               )}
               <div className="border-t border-gray-100 pt-3 flex justify-between font-bold text-gray-900 text-base">

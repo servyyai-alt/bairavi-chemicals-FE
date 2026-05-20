@@ -291,8 +291,13 @@ import {
 FiSearch,
 FiMenu,
 FiX,
+FiShoppingCart,
+FiHeart,
+FiPackage,
 FiArrowRight
 } from "react-icons/fi";
+import { useAuth } from "../../context/AuthContext";
+import { useCart } from "../../context/CartContext";
 
 import logo from "../../assets/logo.jpeg";
 
@@ -306,6 +311,8 @@ export default function Navbar() {
 
 const location = useLocation();
 const navigate = useNavigate();
+const { user, logout, isAdmin } = useAuth();
+const { cartCount } = useCart();
 
 const [mobileOpen,setMobileOpen]=useState(false);
 const [scrolled,setScrolled]=useState(false);
@@ -411,7 +418,7 @@ gap-3">
 
 <img
 src={logo}
-alt=""
+alt="Sri Bairavi Chemicals logo"
 className="
 w-14
 h-14
@@ -555,6 +562,139 @@ Get Quote
 
 </Link>
 
+{!isAdmin && (
+  <Link
+  to="/wishlist"
+  className="
+  relative
+  hidden
+  md:flex
+  h-11
+  w-11
+  items-center
+  justify-center
+  rounded-xl
+  border
+  border-slate-200
+  text-[#003B7A]
+  hover:border-[#003B7A]
+  hover:bg-blue-50
+  duration-300">
+  <FiHeart className="w-5 h-5" />
+  </Link>
+)}
+
+{!isAdmin && (
+  <Link
+  to="/cart"
+  className="
+  relative
+  hidden
+  md:flex
+  h-11
+  w-11
+  items-center
+  justify-center
+  rounded-xl
+  border
+  border-slate-200
+  text-[#003B7A]
+  hover:border-[#003B7A]
+  hover:bg-blue-50
+  duration-300">
+  <FiShoppingCart className="w-5 h-5" />
+  {cartCount > 0 && (
+    <span
+    className="
+    absolute
+    -top-2
+    -right-2
+    min-w-[20px]
+    h-5
+    px-1
+    rounded-full
+    bg-[#4E9A2D]
+    text-white
+    text-[10px]
+    font-bold
+    flex
+    items-center
+    justify-center">
+    {cartCount > 9 ? "9+" : cartCount}
+    </span>
+  )}
+  </Link>
+)}
+
+{
+user
+?
+<div className="hidden md:flex items-center gap-3">
+  <Link
+  to="/orders"
+  className="
+  font-medium
+  text-[#003B7A]
+  hover:text-[#4E9A2D]
+  duration-300">
+  My Orders
+  </Link>
+
+  <Link
+  to={isAdmin ? "/admin/dashboard" : "/profile"}
+  className="
+  font-medium
+  text-[#003B7A]
+  hover:text-[#4E9A2D]
+  duration-300">
+  {isAdmin ? "Admin Panel" : "My Account"}
+  </Link>
+
+  <button
+  onClick={logout}
+  className="
+  rounded-xl
+  border
+  border-slate-200
+  px-4
+  py-2.5
+  text-slate-700
+  hover:border-red-200
+  hover:text-red-500
+  duration-300">
+  Sign Out
+  </button>
+</div>
+:
+<div className="hidden md:flex items-center gap-3">
+  <Link
+  to="/login"
+  className="
+  font-medium
+  text-[#003B7A]
+  hover:text-[#4E9A2D]
+  duration-300">
+  Sign In
+  </Link>
+
+  <Link
+  to="/register"
+  className="
+  rounded-xl
+  border
+  border-[#003B7A]
+  px-4
+  py-2.5
+  font-medium
+  text-[#003B7A]
+  hover:bg-[#003B7A]
+  hover:text-white
+  duration-300">
+  Sign Up
+  </Link>
+</div>
+}
+
 
 
 
@@ -637,6 +777,95 @@ text-slate-700">
 
 ))
 
+}
+
+{
+user
+?
+<>
+  {!isAdmin && (
+    <Link
+    to="/wishlist"
+    className="
+    flex
+    justify-between
+    text-slate-700">
+    Wishlist
+    <FiArrowRight/>
+    </Link>
+  )}
+
+  {!isAdmin && (
+    <Link
+    to="/cart"
+    className="
+    flex
+    justify-between
+    text-slate-700">
+    Cart
+    <FiArrowRight/>
+    </Link>
+  )}
+
+  {!isAdmin && (
+    <Link
+    to="/orders"
+    className="
+    flex
+    justify-between
+    text-slate-700">
+    My Orders
+    <FiArrowRight/>
+    </Link>
+  )}
+
+  <Link
+  to={isAdmin ? "/admin/dashboard" : "/profile"}
+  className="
+  flex
+  justify-between
+  text-slate-700">
+  {isAdmin ? "Admin Panel" : "My Account"}
+  <FiArrowRight/>
+  </Link>
+
+  <button
+  onClick={logout}
+  className="
+  w-full
+  rounded-xl
+  border
+  border-red-200
+  py-3
+  text-red-500">
+  Sign Out
+  </button>
+</>
+:
+<>
+  <Link
+  to="/login"
+  className="
+  flex
+  justify-between
+  text-slate-700">
+  Sign In
+  <FiArrowRight/>
+  </Link>
+
+  <Link
+  to="/register"
+  className="
+  block
+  border
+  border-[#003B7A]
+  text-center
+  text-[#003B7A]
+  py-3
+  rounded-xl">
+  Sign Up
+  </Link>
+</>
 }
 
 

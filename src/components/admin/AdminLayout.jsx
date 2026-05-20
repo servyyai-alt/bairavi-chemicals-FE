@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useState } from 'react';
-import { FiPackage, FiTag, FiShoppingBag, FiUsers, FiMenu, FiX, FiLogOut, FiBarChart2, FiChevronRight } from 'react-icons/fi';
+import { FiPackage, FiTag, FiShoppingBag, FiUsers, FiMenu, FiX, FiLogOut, FiBarChart2, FiChevronRight, FiSettings } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
 
 const NAV = [
@@ -9,6 +9,7 @@ const NAV = [
   { icon: FiTag,        label: 'Categories', to: '/admin/categories',accent: '#d97706' },
   { icon: FiShoppingBag,label: 'Orders',     to: '/admin/orders',    accent: '#7c3aed' },
   { icon: FiUsers,      label: 'Users',      to: '/admin/users',     accent: '#dc2626' },
+  { icon: FiSettings,   label: 'Settings',   to: '/admin/settings',  accent: '#475569' },
 ];
 
 export default function AdminLayout({ children }) {

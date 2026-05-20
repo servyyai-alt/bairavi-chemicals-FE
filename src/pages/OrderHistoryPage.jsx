@@ -7,11 +7,12 @@ import {
   FiPackage,
   FiShoppingBag,
   FiStar,
+  FiTrash2,
   FiTruck,
   FiXCircle
 } from 'react-icons/fi';
 import toast from 'react-hot-toast';
-import { cancelMyOrder, getMyOrders } from '../services/api';
+import { cancelMyOrder, deleteMyOrder, getMyOrders } from '../services/api';
 import { Loader } from '../components/common/Loader';
 import RatingPopup from '../components/common/RatingPopup';
 
@@ -40,6 +41,16 @@ const STATUS_TO_STEP_INDEX = {
 };
 
 const CANCELLABLE_STATUSES = ['pending', 'confirmed', 'processing'];
+const ORDER_FILTERS = ['all', 'pending', 'confirmed', 'shipped', 'delivered', 'cancelled'];
+
+const getOrderFilterKey = (status) => {
+  if (status === 'pending' || status === 'processing') return 'pending';
+  if (status === 'confirmed') return 'confirmed';
+  if (status === 'shipped') return 'shipped';
+  if (status === 'delivered') return 'delivered';
+  if (status === 'cancelled') return 'cancelled';
+  return 'all';
+};
 
 function OrderStatusTracker({ status }) {
   if (status === 'cancelled') {
@@ -121,6 +132,8 @@ export default function OrderHistoryPage() {
   const [loading, setLoading] = useState(true);
   const [showRatingPopup, setShowRatingPopup] = useState(null);
   const [cancellingId, setCancellingId] = useState('');
+  const [deletingId, setDeletingId] = useState('');
+  const [activeFilter, setActiveFilter] = useState('all');
 
   useEffect(() => {
     getMyOrders()
@@ -146,7 +159,33 @@ export default function OrderHistoryPage() {
     }
   };
 
+  const handleDeleteOrder = async (orderId) => {
+    if (!confirm('Delete this cancelled order?')) return;
+
+    setDeletingId(orderId);
+    try {
+      await deleteMyOrder(orderId);
+      setOrders((current) => current.filter((order) => order._id !== orderId));
+      toast.success('Order deleted');
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to delete order');
+    } finally {
+      setDeletingId('');
+    }
+  };
+
   if (loading) return <Loader size="lg" />;
+
+  const filteredOrders = orders.filter((order) => (
+    activeFilter === 'all' ? true : getOrderFilterKey(order.orderStatus) === activeFilter
+  ));
+
+  const filterCounts = ORDER_FILTERS.reduce((acc, filterKey) => {
+    acc[filterKey] = filterKey === 'all'
+      ? orders.length
+      : orders.filter((order) => getOrderFilterKey(order.orderStatus) === filterKey).length;
+    return acc;
+  }, {});
 
   return (
     <div className="mx-auto max-w-4xl animate-fade-in px-4 py-8">
@@ -164,8 +203,31 @@ export default function OrderHistoryPage() {
           </Link>
         </div>
       ) : (
-        <div className="space-y-4">
-          {orders.map(order => (
+        <>
+          <div className="mb-6 flex flex-wrap gap-2">
+            {ORDER_FILTERS.map((filterKey) => (
+              <button
+                key={filterKey}
+                onClick={() => setActiveFilter(filterKey)}
+                className={`rounded-full px-4 py-2 text-sm font-semibold capitalize transition-colors ${
+                  activeFilter === filterKey
+                    ? 'bg-primary-600 text-white'
+                    : 'bg-white text-gray-600 border border-gray-200 hover:border-primary-300 hover:text-primary-600'
+                }`}
+              >
+                {filterKey} ({filterCounts[filterKey] || 0})
+              </button>
+            ))}
+          </div>
+
+          {filteredOrders.length === 0 ? (
+            <div className="rounded-3xl border border-dashed border-gray-200 bg-white px-6 py-12 text-center">
+              <p className="text-lg font-semibold text-gray-800">No {activeFilter} orders</p>
+              <p className="mt-2 text-sm text-gray-500">Orders in this status will appear here.</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {filteredOrders.map(order => (
             <div key={order._id} className="card p-5 transition-shadow hover:shadow-md">
               <div className="mb-4 flex items-start justify-between">
                 <div>
@@ -224,6 +286,7 @@ export default function OrderHistoryPage() {
                       >
                         <div className="min-w-0">
                           <p className="truncate text-sm font-medium text-gray-900">{item.name}</p>
+                          <p className="text-xs text-gray-500">Size: {item.selectedSize}</p>
                           <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
                         </div>
 
@@ -258,12 +321,25 @@ export default function OrderHistoryPage() {
                     </button>
                   )}
 
+                  {order.orderStatus === 'cancelled' && (
+                    <button
+                      onClick={() => handleDeleteOrder(order._id)}
+                      disabled={deletingId === order._id}
+                      className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-semibold text-gray-700 transition hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      <FiTrash2 className="h-3.5 w-3.5" />
+                      {deletingId === order._id ? 'Deleting...' : 'Delete'}
+                    </button>
+                  )}
+
                   <p className="text-base font-bold text-gray-900">Rs {order.totalPrice}</p>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
+              ))}
+            </div>
+          )}
+        </>
       )}
 
       {showRatingPopup && <RatingPopup product={showRatingPopup} onClose={() => setShowRatingPopup(null)} />}

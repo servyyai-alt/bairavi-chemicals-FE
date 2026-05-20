@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import logo from '../assets/logo.jpeg';
 
@@ -8,11 +9,13 @@ export function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const { login, loading, user, isAdmin } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const redirectTo = location.state?.from;
 
   useEffect(() => {
     if (!user) return;
-    navigate(isAdmin ? '/admin/dashboard' : '/', { replace: true });
-  }, [user, isAdmin, navigate]);
+    navigate(isAdmin ? '/admin/dashboard' : (redirectTo || '/'), { replace: true });
+  }, [user, isAdmin, navigate, redirectTo]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,7 +23,7 @@ export function LoginPage() {
     if (!res.success) return;
 
     const adminLogin = res.user?.role?.toLowerCase() === 'admin' || res.role?.toLowerCase() === 'admin';
-    navigate(adminLogin ? '/admin/dashboard' : '/', { replace: true });
+    navigate(adminLogin ? '/admin/dashboard' : (redirectTo || '/'), { replace: true });
   };
 
   return (
@@ -28,10 +31,10 @@ export function LoginPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2 mb-6">
-                        <img src={logo} alt="Vallal Food logo" className="h-16 w-auto object-contain" />
+            <img src={logo} alt="Sri Bairavi Chemicals logo" className="h-16 w-auto object-contain" />
           </Link>
           <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
-          <p className="text-gray-500 mt-2">Sign in to your account</p>
+          <p className="text-gray-500 mt-2">Sign in to continue to Sri Bairavi Chemicals</p>
         </div>
         <div className="card p-8">
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -45,6 +48,7 @@ export function LoginPage() {
               <input 
                 type={showPassword ? 'text' : 'password'} 
                 required 
+                minLength={6}
                 value={form.password} 
                 onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
                 placeholder="••••••••" 
@@ -97,7 +101,11 @@ export function RegisterPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (form.password !== form.confirmPassword) { alert('Passwords do not match'); return; }
+    if (form.password !== form.confirmPassword) {
+      toast.error('Passwords do not match');
+      return;
+    }
+
     const res = await register(form.name, form.email, form.password);
     if (res.success) navigate('/');
   };
@@ -107,10 +115,10 @@ export function RegisterPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2 mb-6">
-            <img src={logo} alt="Vallal Food logo" className="h-16 w-auto object-contain" />
+            <img src={logo} alt="Sri Bairavi Chemicals logo" className="h-16 w-auto object-contain" />
           </Link>
           <h1 className="text-3xl font-bold text-gray-900">Create Account</h1>
-          <p className="text-gray-500 mt-2">Join thousands of happy customers</p>
+          <p className="text-gray-500 mt-2">Create your customer account for chemical orders and enquiries</p>
         </div>
         <div className="card p-8">
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -131,6 +139,7 @@ export function RegisterPage() {
               <input 
                 type={showPassword ? 'text' : 'password'} 
                 required 
+                minLength={6}
                 value={form.password} 
                 onChange={e => setForm(prev => ({ ...prev, password: e.target.value }))}
                 placeholder="Min 6 characters" 
@@ -163,6 +172,7 @@ export function RegisterPage() {
               <input 
                 type={showConfirmPassword ? 'text' : 'password'} 
                 required 
+                minLength={6}
                 value={form.confirmPassword} 
                 onChange={e => setForm(prev => ({ ...prev, confirmPassword: e.target.value }))}
                 placeholder="Repeat password" 

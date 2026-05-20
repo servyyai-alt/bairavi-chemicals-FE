@@ -12,60 +12,75 @@ import cleanersImg from "../assets/cleaning.png";
 import solventImg from "../assets/solvents.png";
 import rawImg from "../assets/raw.png";
 import specialityImg from "../assets/speciality.png";
+import phenylImg from "../assets/phenyl.png";
+import detergentImg1 from "../assets/detergent1.png";
+import dishwashImg from "../assets/dishwash.png";
+import floorImg from "../assets/floor-cleaner.png";
+import toiletImg from "../assets/toilet-cleaner.png";
+import tilesImg from "../assets/tiles-cleaner.png";
+import fabricImg from "../assets/fabric-conditioner.png";
+import soapoilImg from "../assets/soap-oil.png";
+import perfumedImg from "../assets/perfumed-phenyl.png";
 import whyUsImg from "../assets/company.png";
 
 /* ── Constants ────────────────────────────────────────────────────────── */
 const CATEGORIES = [
 
 {
-name:"Industrial Chemicals",
-slug:"industrial",
-image:industrialImg
+name:"Phenyl Compound",
+slug:"phenyl-compound",
+image:phenylImg
 },
 
 {
-name:"Laboratory Chemicals",
-slug:"lab",
-image:labImg
+name:"Detergent Liquid",
+slug:"detergent-liquid",
+image:detergentImg1
 },
 
 {
-name:"Water Treatment",
-slug:"water",
-image:waterImg
+name:"Dishwash Liquid",
+slug:"dishwash-liquid",
+image:dishwashImg
 },
 
 {
-name:"Cleaning Chemicals",
-slug:"cleaning",
-image:cleanersImg
+name:"Floor Cleaner",
+slug:"floor-cleaner",
+image:floorImg
 },
 
 {
-name:"Detergent Solutions",
-slug:"detergent",
-image:detergentImg
+name:"Toilet Cleaner",
+slug:"toilet-cleaner",
+image:toiletImg
 },
 
 {
-name:"Solvents",
-slug:"solvents",
-image:solventImg
+name:"Tiles Cleaner",
+slug:"tiles-cleaner",
+image:tilesImg
 },
 
 {
-name:"Raw Materials",
-slug:"raw",
-image:rawImg
+name:"Fabric Conditioner",
+slug:"fabric-conditioner",
+image:fabricImg
 },
 
 {
-name:"Speciality Chemicals",
-slug:"speciality",
-image:specialityImg
+name:"Soap Oil",
+slug:"soap-oil",
+image:soapoilImg
+},
+
+{
+name:"Perfumed Phenyl",
+slug:"perfumed-phenyl",
+image:perfumedImg
 }
 
-]
+];
 
 const STATS = [
   { value:'500+', label:'Chemical Products'},
@@ -107,6 +122,8 @@ const TESTIMONIALS = [
   { name: 'Dr. Meena Priya', company: 'BioLab Research Institute', rating: 5, initial: 'M', text: 'Lab-grade reagents at competitive prices. Purity certificates provided with every batch — very professional.' },
   { name: 'Suresh Babu', company: 'Metro Water Works', rating: 5, initial: 'S', text: 'Their water treatment chemicals have been integral to our plant operations for 3+ years. Zero quality complaints.' },
 ];
+
+const FALLBACK_CATEGORY_IMAGE = productsHero;
 
 /* ── Animated particle background ───────────────────────────────────── */
 function HeroParticles() {
@@ -576,44 +593,37 @@ Pan India Supply
 
 
       {/* ── CATEGORIES ──────────────────────────────────────────────── */}
-     <section
-className="py-24 bg-[#F8FCFF]">
+     <section className="py-16 md:py-24 bg-[#F8FCFF]">
 
-<div className="max-w-7xl mx-auto px-6">
+<div className="max-w-7xl mx-auto px-4 md:px-6">
 
-<div className="
-flex
-justify-between
-items-end
-mb-12">
+{/* Heading */}
+
+<div className="flex justify-between items-end mb-10 md:mb-14">
 
 <div>
-
-<p className="
-text-[#4E9A2D]
-font-medium">
-
+<p className="text-[#4E9A2D] font-medium text-sm md:text-base">
 Our Products
-
 </p>
 
 <h2 className="
-text-5xl
+text-3xl
+md:text-5xl
 font-bold
 text-[#003B7A]">
 
 Browse Categories
 
 </h2>
-
 </div>
-
 
 <Link
 to="/products"
 className="
 text-[#0056A6]
-font-medium">
+font-medium
+text-sm
+md:text-base">
 
 View All →
 
@@ -623,74 +633,90 @@ View All →
 
 
 
+{/* Cards */}
+
 <div className="
 grid
-md:grid-cols-4
-gap-6">
+grid-cols-2
+sm:grid-cols-2
+md:grid-cols-3
+lg:grid-cols-4
+gap-4
+md:gap-7">
 
 {
 
-CATEGORIES.map((cat)=>(
+categories.map((cat)=>(
 
 <Link
-
+key={cat._id || cat.slug}
 to={`/products?category=${cat.slug}`}
 
 className="
 group
+bg-white
 rounded-3xl
 overflow-hidden
-bg-white
 shadow-sm
 hover:shadow-2xl
-duration-300">
+duration-300
+border
+border-gray-100">
+
+{/* IMAGE */}
 
 <div className="
-overflow-hidden
-h-[220px]">
+h-[180px]
+sm:h-[220px]
+md:h-[260px]
+flex
+items-center
+justify-center
+bg-[#F8FCFF]
+overflow-hidden">
 
 <img
-
-src={cat.image}
-
-alt=""
+src={cat.image || FALLBACK_CATEGORY_IMAGE}
+alt={cat.name}
 
 className="
 w-full
 h-full
-object-cover
-group-hover:scale-110
-duration-500"
-
+object-contain
+group-hover:scale-105
+duration-500
+p-2"
 />
 
 </div>
 
 
 
-<div className="p-5">
+{/* CONTENT */}
+
+<div className="p-4 md:p-5">
 
 <h3 className="
+text-[#003B7A]
 font-semibold
-text-lg
-text-[#003B7A]">
+text-sm
+md:text-xl">
 
 {cat.name}
 
 </h3>
 
-
 <p className="
 text-gray-500
-text-sm
+text-xs
+md:text-sm
 mt-2">
 
-View Products
+View Products →
 
 </p>
 
 </div>
-
 
 </Link>
 
@@ -1510,4 +1536,3 @@ Years Experience
 //     </div>
 //   );
 // }
-

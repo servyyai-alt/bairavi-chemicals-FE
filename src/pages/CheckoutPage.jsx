@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiLock } from 'react-icons/fi';
-import { createOrder, verifyPayment } from '../services/api';
+import { createOrder, verifyPayment, getStoreSettings } from '../services/api';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
@@ -35,32 +35,56 @@ export default function CheckoutPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('cod');
+  const [storeSettings, setStoreSettings] = useState({
+    gstPercentage: 18,
+    shippingCharge: 49,
+    freeShippingAbove: 499,
+    codAvailable: true
+  });
   const [address, setAddress] = useState({
     fullName: user?.name || '', phone: user?.phone || '',
     street: user?.address?.street || '', city: user?.address?.city || '',
     state: user?.address?.state || '', pincode: user?.address?.pincode || ''
   });
 
-  const shipping = cart.totalAmount > 499 ? 0 : 49;
-  const tax = Math.round(cart.totalAmount * 0.05);
+  useEffect(() => {
+    getStoreSettings()
+      .then(({ data }) => {
+        const settings = data.settings || {};
+        const normalized = {
+          gstPercentage: Number(settings.gstPercentage ?? 18),
+          shippingCharge: Number(settings.shippingCharge ?? 49),
+          freeShippingAbove: Number(settings.freeShippingAbove ?? 499),
+          codAvailable: Boolean(settings.codAvailable ?? true)
+        };
+        setStoreSettings(normalized);
+        if (!normalized.codAvailable) {
+          setPaymentMethod('razorpay');
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const shipping = cart.totalAmount >= Number(storeSettings.freeShippingAbove || 0)
+    ? 0
+    : Number(storeSettings.shippingCharge || 0);
+  const tax = Math.round(cart.totalAmount * (Number(storeSettings.gstPercentage || 0) / 100));
   const total = cart.totalAmount + shipping + tax;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      // ✅ Send orderItems in request
       const orderItems = cart.items.map(item => ({
         product: item.product._id,
+        selectedSize: item.selectedSize,
         quantity: item.quantity
       }));
-      
-      console.log("✅ SENDING ORDER DATA:", { orderItems, shippingAddress: address, paymentMethod });
-      
-      const { data } = await createOrder({ 
-        orderItems, 
-        shippingAddress: address, 
-        paymentMethod 
+
+      const { data } = await createOrder({
+        orderItems,
+        shippingAddress: address,
+        paymentMethod
       });
 
       if (paymentMethod === 'razorpay') {
@@ -145,7 +169,7 @@ export default function CheckoutPage() {
               <h2 className="font-bold text-lg text-gray-900 mb-5">Payment Method</h2>
               <div className="space-y-3">
                 {[
-                  { value: 'cod', label: 'Cash on Delivery', icon: '💵', desc: 'Pay when your order arrives' },
+                  ...(storeSettings.codAvailable ? [{ value: 'cod', label: 'Cash on Delivery', icon: '💵', desc: 'Pay when your order arrives' }] : []),
                   { value: 'razorpay', label: 'Online Payment', icon: '💳', desc: 'Cards, UPI, Netbanking via Razorpay' }
                 ].map(m => (
                   <label key={m.value} className={`flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${paymentMethod === m.value ? 'border-primary-500 bg-primary-50' : 'border-gray-200 hover:border-gray-300'}`}>
@@ -174,6 +198,7 @@ export default function CheckoutPage() {
                     <img src={item.product?.images?.[0] || ''} alt="" className="w-12 h-12 rounded-lg object-cover bg-gray-100" />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-gray-800 line-clamp-1">{item.product?.name}</p>
+                      <p className="text-xs text-gray-500">Size: {item.selectedSize}</p>
                       <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
                     </div>
                     <span className="text-sm font-semibold">₹{(item.price * item.quantity).toFixed(0)}</span>
@@ -183,7 +208,7 @@ export default function CheckoutPage() {
               <div className="border-t border-gray-100 pt-4 space-y-2 text-sm">
                 <div className="flex justify-between text-gray-600"><span>Subtotal</span><span>₹{cart.totalAmount?.toFixed(2)}</span></div>
                 <div className="flex justify-between text-gray-600"><span>Shipping</span><span className={shipping === 0 ? 'text-primary-600 font-medium' : ''}>{shipping === 0 ? 'FREE' : `₹${shipping}`}</span></div>
-                <div className="flex justify-between text-gray-600"><span>Tax (5%)</span><span>₹{tax}</span></div>
+                <div className="flex justify-between text-gray-600"><span>Tax ({storeSettings.gstPercentage || 0}%)</span><span>₹{tax}</span></div>
                 <div className="flex justify-between font-bold text-gray-900 text-base border-t border-gray-100 pt-2 mt-2">
                   <span>Total</span><span>₹{total.toFixed(2)}</span>
                 </div>

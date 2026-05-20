@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { FiEdit2, FiPlus, FiTrash2 } from 'react-icons/fi';
+import { FiEdit2, FiPlus, FiTrash2, FiUpload, FiX } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import AdminLayout from '../../components/admin/AdminLayout';
 import { Loader } from '../../components/common/Loader';
 import { useAdminPanel } from '../../context/AdminPanelContext';
-import { createCategory, deleteCategory, getAllCategoriesAdmin, getCategories, updateCategory } from '../../services/api';
+import { createCategory, deleteCategory, getAllCategoriesAdmin, getCategories, updateCategory, uploadImage } from '../../services/api';
 
 const EMPTY = {
   name: '',
@@ -22,6 +22,7 @@ export default function AdminCategories() {
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(EMPTY);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const { currentSearch } = useAdminPanel();
 
   const load = async () => {
@@ -94,6 +95,23 @@ export default function AdminCategories() {
     }
   };
 
+  const handleImageUpload = async e => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const { data } = await uploadImage(file);
+      setForm(current => ({ ...current, image: data.url }));
+      toast.success('Category image uploaded');
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Image upload failed');
+    } finally {
+      setUploading(false);
+      e.target.value = '';
+    }
+  };
+
   const handleDelete = async id => {
     if (!confirm('Delete this category?')) return;
 
@@ -159,7 +177,13 @@ export default function AdminCategories() {
             {filtered.map(category => (
               <div key={category._id} className="card p-5">
                 <div className="flex items-start gap-4">
-                  <div className="text-4xl">{category.icon}</div>
+                  <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gray-100">
+                    {category.image ? (
+                      <img src={category.image} alt={category.name} className="h-full w-full object-cover" />
+                    ) : (
+                      <div className="text-4xl">{category.icon}</div>
+                    )}
+                  </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <p className="font-bold text-gray-900">{category.name}</p>
@@ -220,7 +244,6 @@ export default function AdminCategories() {
                 { key: 'name', label: 'Name', type: 'text' },
                 { key: 'icon', label: 'Icon', type: 'text' },
                 { key: 'description', label: 'Description', type: 'text' },
-                { key: 'image', label: 'Image URL', type: 'text' },
                 { key: 'sortOrder', label: 'Sort Order', type: 'number' }
               ].map(field => (
                 <div key={field.key}>
@@ -234,6 +257,52 @@ export default function AdminCategories() {
                   />
                 </div>
               ))}
+
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-gray-700">Category Image</label>
+                <div className="flex items-start gap-3">
+                  <div className="flex h-24 w-24 flex-shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-dashed border-gray-300 bg-gray-50">
+                    {form.image ? (
+                      <img src={form.image} alt="Category preview" className="h-full w-full object-cover" />
+                    ) : (
+                      <span className="text-3xl">{form.icon || '🧪'}</span>
+                    )}
+                  </div>
+
+                  <div className="flex-1 space-y-3">
+                    <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:border-primary-300 hover:text-primary-600">
+                      <FiUpload className="h-4 w-4" />
+                      {uploading ? 'Uploading...' : 'Upload Image'}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                        disabled={uploading}
+                      />
+                    </label>
+
+                    {form.image && (
+                      <button
+                        type="button"
+                        onClick={() => setForm(current => ({ ...current, image: '' }))}
+                        className="inline-flex items-center gap-2 rounded-xl bg-red-50 px-4 py-2 text-sm font-medium text-red-500 hover:bg-red-100"
+                      >
+                        <FiX className="h-4 w-4" />
+                        Remove Image
+                      </button>
+                    )}
+
+                    <input
+                      type="text"
+                      value={form.image}
+                      onChange={e => setForm(current => ({ ...current, image: e.target.value }))}
+                      placeholder="Or paste image URL"
+                      className="input-field"
+                    />
+                  </div>
+                </div>
+              </div>
 
               <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
                 <input

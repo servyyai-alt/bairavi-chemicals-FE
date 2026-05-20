@@ -29,6 +29,7 @@ import AdminProducts from './pages/admin/AdminProducts';
 import AdminCategories from './pages/admin/AdminCategories';
 import AdminOrders from './pages/admin/AdminOrders';
 import AdminUsers from './pages/admin/AdminUsers';
+import AdminSettings from './pages/admin/AdminSettings';
 
 function Layout({ children }) {
   return (
@@ -113,6 +114,7 @@ export default function App() {
             <Route path="/admin/categories" element={<AdminRoute><AdminShell><AdminCategories /></AdminShell></AdminRoute>} />
             <Route path="/admin/orders" element={<AdminRoute><AdminShell><AdminOrders /></AdminShell></AdminRoute>} />
             <Route path="/admin/users" element={<AdminRoute><AdminShell><AdminUsers /></AdminShell></AdminRoute>} />
+            <Route path="/admin/settings" element={<AdminRoute><AdminShell><AdminSettings /></AdminShell></AdminRoute>} />
 
             {/* 404 */}
             <Route path="*" element={

@@ -33,6 +33,7 @@ export default function OrderConfirmationPage() {
               <img src={item.image || 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=80'} alt={item.name} className="w-12 h-12 rounded-xl object-cover bg-white" />
               <div className="flex-1">
                 <p className="font-medium text-gray-900 text-sm">{item.name}</p>
+                <p className="text-xs text-gray-500">Size: {item.selectedSize}</p>
                 <p className="text-xs text-gray-500">Qty: {item.quantity} × ₹{item.price}</p>
               </div>
               <span className="font-semibold text-sm">₹{(item.price * item.quantity).toFixed(0)}</span>

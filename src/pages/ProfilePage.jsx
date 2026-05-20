@@ -1,13 +1,26 @@
-import { useState } from 'react';
-import { FiUser, FiLock, FiSave, FiEye, FiEyeOff } from 'react-icons/fi';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { FiUser, FiLock, FiSave, FiEye, FiEyeOff, FiPackage, FiChevronRight } from 'react-icons/fi';
 import { updateProfile, changePassword } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
+import { getMyOrders } from '../services/api';
+
+const STATUS_STYLES = {
+  pending: 'bg-yellow-100 text-yellow-700',
+  confirmed: 'bg-blue-100 text-blue-700',
+  processing: 'bg-purple-100 text-purple-700',
+  shipped: 'bg-indigo-100 text-indigo-700',
+  delivered: 'bg-primary-100 text-primary-700',
+  cancelled: 'bg-red-100 text-red-700'
+};
 
 export default function ProfilePage() {
   const { user, refreshUser } = useAuth();
 
   const [tab, setTab] = useState('profile');
+  const [orders, setOrders] = useState([]);
+  const [ordersLoading, setOrdersLoading] = useState(true);
 
   const [form, setForm] = useState({
     name: user?.name || '',
@@ -31,6 +44,19 @@ export default function ProfilePage() {
   });
 
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    getMyOrders()
+      .then(({ data }) => {
+        setOrders(data.orders || []);
+      })
+      .catch(() => {
+        setOrders([]);
+      })
+      .finally(() => {
+        setOrdersLoading(false);
+      });
+  }, []);
 
   const handleProfileSave = async (e) => {
     e.preventDefault();
@@ -101,7 +127,7 @@ export default function ProfilePage() {
           {user?.name?.[0]?.toUpperCase()}
         </div>
 
-        <div>
+        <div className="flex-1">
           <h2 className="text-xl font-bold text-gray-900">
             {user?.name}
           </h2>
@@ -114,13 +140,27 @@ export default function ProfilePage() {
             {user?.role}
           </span>
         </div>
+
+        <div className="hidden md:grid grid-cols-2 gap-3">
+          <div className="rounded-2xl bg-gray-50 px-4 py-3 text-center">
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Orders</p>
+            <p className="mt-1 text-lg font-bold text-gray-900">{orders.length}</p>
+          </div>
+          <div className="rounded-2xl bg-gray-50 px-4 py-3 text-center">
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Active</p>
+            <p className="mt-1 text-lg font-bold text-gray-900">
+              {orders.filter(order => !['delivered', 'cancelled'].includes(order.orderStatus)).length}
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Tabs */}
       <div className="flex border-b border-gray-200 mb-6">
         {[
           ['profile', <FiUser className="w-4 h-4" />, 'Profile Info'],
-          ['password', <FiLock className="w-4 h-4" />, 'Change Password']
+          ['password', <FiLock className="w-4 h-4" />, 'Change Password'],
+          ['orders', <FiPackage className="w-4 h-4" />, 'My Orders']
         ].map(([key, icon, label]) => (
           <button
             key={key}
@@ -336,6 +376,92 @@ export default function ProfilePage() {
             </button>
 
           </form>
+        </div>
+      )}
+
+      {tab === 'orders' && (
+        <div className="card p-6">
+          <div className="mb-5 flex items-center justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-bold text-gray-900">Purchased Products & Order Status</h2>
+              <p className="text-sm text-gray-500">See everything you bought and the latest order status.</p>
+            </div>
+            <Link to="/orders" className="text-sm font-semibold text-primary-600 hover:text-primary-700">
+              View Full Orders
+            </Link>
+          </div>
+
+          {ordersLoading ? (
+            <div className="space-y-3">
+              {Array.from({ length: 3 }).map((_, index) => (
+                <div key={index} className="h-20 rounded-2xl bg-gray-100 animate-pulse" />
+              ))}
+            </div>
+          ) : orders.length === 0 ? (
+            <div className="rounded-2xl bg-gray-50 px-5 py-10 text-center">
+              <p className="text-lg font-bold text-gray-800">No orders yet</p>
+              <p className="mt-2 text-sm text-gray-500">Once the user buys products, they will appear here with full status.</p>
+              <Link to="/products" className="btn-primary inline-flex mt-5">
+                Shop Products
+              </Link>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {orders.slice(0, 5).map(order => (
+                <div key={order._id} className="rounded-2xl border border-gray-100 p-4">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <p className="font-mono text-sm font-semibold text-gray-900">#{order._id.slice(-8).toUpperCase()}</p>
+                      <p className="mt-1 text-xs text-gray-500">
+                        {new Date(order.createdAt).toLocaleDateString('en-IN', {
+                          day: 'numeric',
+                          month: 'long',
+                          year: 'numeric'
+                        })}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <span className={`rounded-full px-3 py-1 text-xs font-semibold capitalize ${STATUS_STYLES[order.orderStatus]}`}>
+                        {order.orderStatus}
+                      </span>
+                      <Link to={`/orders/${order._id}`} className="text-primary-600 hover:text-primary-700">
+                        <FiChevronRight className="h-5 w-5" />
+                      </Link>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 space-y-3">
+                    {order.orderItems.map((item, index) => (
+                      <div key={`${order._id}-${index}`} className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-3">
+                        <img
+                          src={item.image || 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=80'}
+                          alt={item.name}
+                          className="h-14 w-14 rounded-xl bg-white object-contain p-1"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <p className="truncate text-sm font-semibold text-gray-900">{item.name}</p>
+                          <p className="text-xs text-gray-500">Size: {item.selectedSize}</p>
+                          <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-bold text-gray-900">₹{(item.price * item.quantity).toFixed(0)}</p>
+                          <p className="text-xs text-gray-500">{order.paymentMethod.toUpperCase()}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-3">
+                    <p className="text-sm text-gray-500">
+                      {order.orderItems.length} item{order.orderItems.length > 1 ? 's' : ''} purchased
+                    </p>
+                    <p className="text-base font-bold text-gray-900">Total: ₹{order.totalPrice}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

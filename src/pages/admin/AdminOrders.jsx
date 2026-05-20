@@ -49,7 +49,7 @@ export default function AdminOrders() {
       order.shippingAddress?.fullName,
       order.shippingAddress?.phone,
       order.orderStatus,
-      ...(order.orderItems || []).map(item => item.name)
+      ...(order.orderItems || []).flatMap(item => [item.name, item.selectedSize])
     ]
       .filter(Boolean)
       .join(' ')
@@ -113,7 +113,10 @@ export default function AdminOrders() {
                         {order.orderItems.map((item, i) => (
                           <div key={i} className="flex items-center gap-3">
                             <img src={item.image || ''} alt={item.name} className="w-10 h-10 rounded-lg object-cover bg-white" />
-                            <p className="text-sm text-gray-800 flex-1">{item.name} × {item.quantity}</p>
+                            <div className="flex-1">
+                              <p className="text-sm text-gray-800">{item.name} × {item.quantity}</p>
+                              <p className="text-xs text-gray-500">{item.selectedSize}</p>
+                            </div>
                             <p className="text-sm font-semibold text-gray-900">₹{item.price * item.quantity}</p>
                           </div>
                         ))}

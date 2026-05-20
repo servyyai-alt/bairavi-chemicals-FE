@@ -6,21 +6,20 @@ import { toggleWishlist } from '../../services/api';
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 
-const GRADE_STYLES = {
-  industrial:    { bg: 'rgba(11,79,156,0.08)',    color: '#0B4F9C',  border: 'rgba(11,79,156,0.2)'  },
-  laboratory:    { bg: 'rgba(34,197,94,0.08)',    color: '#16a34a',  border: 'rgba(34,197,94,0.2)'  },
-  analytical:    { bg: 'rgba(20,184,166,0.08)',   color: '#0d9488',  border: 'rgba(20,184,166,0.2)' },
-  pharmaceutical:{ bg: 'rgba(245,158,11,0.08)',   color: '#d97706',  border: 'rgba(245,158,11,0.2)' },
-  reagent:       { bg: 'rgba(139,92,246,0.08)',   color: '#7c3aed',  border: 'rgba(139,92,246,0.2)' },
-  technical:     { bg: 'rgba(100,116,139,0.08)',  color: '#475569',  border: 'rgba(100,116,139,0.2)'},
-};
-
 export default function ProductCard({ product }) {
   const { addToCart, cart, increaseQty, decreaseQty } = useCart();
   const { user, refreshUser } = useAuth();
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [adding, setAdding] = useState(false);
+  const defaultVariant = product.variants?.find((variant) => variant.stock > 0) || product.variants?.[0] || null;
+  const displayPrice = defaultVariant
+    ? ((defaultVariant.offerPrice > 0 && defaultVariant.offerPrice < defaultVariant.price) ? defaultVariant.offerPrice : defaultVariant.price)
+    : product.price;
+  const displayOriginalPrice = defaultVariant
+    ? ((defaultVariant.offerPrice > 0 && defaultVariant.offerPrice < defaultVariant.price) ? defaultVariant.price : 0)
+    : product.originalPrice;
+  const displaySize = defaultVariant?.size || product.packagingSize;
 
   useEffect(() => {
     if (!user?.wishlist) { setIsWishlisted(false); return; }
@@ -29,9 +28,10 @@ export default function ProductCard({ product }) {
     ));
   }, [user, product._id]);
 
-  const cartItem = cart.items?.find(item => item.product._id === product._id);
+  const cartItem = cart.items?.find(item =>
+    item.product._id === product._id && (!defaultVariant || item.selectedSize === defaultVariant.size)
+  );
   const qty = cartItem?.quantity || 0;
-  const gradeStyle = GRADE_STYLES[product.grade] || GRADE_STYLES.technical;
 
   const handleWishlist = async (e) => {
     e.preventDefault(); e.stopPropagation();
@@ -48,7 +48,7 @@ export default function ProductCard({ product }) {
     e.preventDefault(); e.stopPropagation();
     if (!user) { toast.error('Please sign in first'); return; }
     setAdding(true);
-    addToCart(product, 1);
+    addToCart(product, defaultVariant?.moq || 1, defaultVariant?.size || '');
     setTimeout(() => setAdding(false), 600);
   };
 
@@ -69,12 +69,14 @@ export default function ProductCard({ product }) {
         }}
       >
         {/* Image wrapper */}
-        <div className="relative overflow-hidden" style={{ height: '200px', background: '#f0f4fe' }}>
+        <div
+          className="relative overflow-hidden flex items-center justify-center bg-[#F8FCFF] h-[250px] sm:h-[280px] md:h-[300px]"
+        >
           <img
             src={images[0]}
             alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-700"
-            style={{ transform: hovered ? 'scale(1.07)' : 'scale(1)' }}
+            className="max-h-full max-w-full object-contain transition-transform duration-500 p-2"
+            style={{ transform: hovered ? 'scale(1.05)' : 'scale(1)' }}
           />
 
           {/* Gradient overlay on hover */}
@@ -123,7 +125,7 @@ export default function ProductCard({ product }) {
           </div>
 
           {/* Out of stock */}
-          {product.stock === 0 && (
+          {(defaultVariant ? defaultVariant.stock === 0 : product.stock === 0) && (
             <div className="absolute inset-0 flex items-center justify-center"
               style={{ background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(4px)' }}>
               <span className="text-white text-xs font-bold px-4 py-2 rounded-full border border-white/30"
@@ -135,14 +137,8 @@ export default function ProductCard({ product }) {
         {/* Body */}
         <div className="p-4 flex flex-col flex-1 gap-2.5">
 
-          {/* Grade + Category */}
+          {/* Meta */}
           <div className="flex items-center gap-2">
-            {product.grade && (
-              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md"
-                style={{ background: gradeStyle.bg, color: gradeStyle.color, border: `1px solid ${gradeStyle.border}` }}>
-                {product.grade}
-              </span>
-            )}
             {product.casNumber && (
               <span className="text-[10px] font-mono text-slate-400 ml-auto">
                 {product.casNumber}
@@ -151,7 +147,10 @@ export default function ProductCard({ product }) {
           </div>
 
           {/* Name */}
-          <h3 className="font-display font-semibold text-[14px] leading-snug text-slate-800 line-clamp-2 group-hover:text-primary-600 transition-colors duration-200">
+          <h3
+            className="font-semibold tracking-tight text-[16px] leading-snug text-slate-800 line-clamp-2 group-hover:text-primary-600 transition-colors duration-200"
+            style={{ fontFamily: 'Inter,sans-serif' }}
+          >
             {product.name}
           </h3>
 
@@ -163,9 +162,9 @@ export default function ProductCard({ product }) {
                 {product.purity} pure
               </span>
             )}
-            {product.packagingSize && (
+            {displaySize && (
               <span className="text-[11px] text-slate-400 flex items-center gap-1">
-                <FiPackage className="w-2.5 h-2.5" /> {product.packagingSize}
+                <FiPackage className="w-2.5 h-2.5" /> {displaySize}
               </span>
             )}
           </div>
@@ -186,31 +185,39 @@ export default function ProductCard({ product }) {
           {/* Price + Add to cart */}
           <div className="mt-auto pt-3 flex items-center justify-between border-t border-gray-100">
             <div>
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-lg font-bold font-display" style={{ color: '#0B4F9C' }}>
-                  ₹{product.price?.toLocaleString('en-IN')}
+              <div className="flex items-end gap-2">
+                <span
+                  className="text-2xl font-black tracking-tight leading-none"
+                  style={{ color: '#0B4F9C', fontFamily: 'Inter, sans-serif' }}
+                >
+                  ₹{displayPrice?.toLocaleString('en-IN')}
                 </span>
-                <span className="text-xs text-slate-400">/{product.unit || 'kg'}</span>
+                {displayOriginalPrice > displayPrice && (
+                  <span className="text-sm line-through text-gray-400 font-medium">
+                    ₹{displayOriginalPrice?.toLocaleString('en-IN')}
+                  </span>
+                )}
               </div>
-              {product.originalPrice > product.price && (
-                <div className="text-xs text-slate-400 line-through leading-none">
-                  ₹{product.originalPrice?.toLocaleString('en-IN')}
-                </div>
-              )}
+              <div className="flex items-center gap-2 mt-1">
+                {displaySize && <span className="text-xs text-slate-400">{displaySize}</span>}
+                {product.discount > 0 && (
+                  <span className="text-xs font-semibold text-green-600">{product.discount}% OFF</span>
+                )}
+              </div>
             </div>
 
             {qty > 0 ? (
               <div className="flex items-center gap-2" onClick={e => e.preventDefault()}>
-                <button onClick={() => decreaseQty(cartItem.product._id)}
+                <button onClick={() => decreaseQty(cartItem.product._id, defaultVariant?.size || '')}
                   className="w-7 h-7 rounded-xl flex items-center justify-center font-bold text-sm transition-all hover:scale-110"
                   style={{ background: '#f0f4fe', color: '#0B4F9C' }}>−</button>
                 <span className="text-sm font-bold text-slate-700 w-5 text-center">{qty}</span>
-                <button onClick={() => increaseQty(cartItem.product._id)}
+                <button onClick={() => increaseQty(cartItem.product._id, defaultVariant?.size || '')}
                   className="w-7 h-7 rounded-xl flex items-center justify-center font-bold text-sm text-white transition-all hover:scale-110"
                   style={{ background: 'linear-gradient(135deg,#0B4F9C,#1a70ff)' }}>+</button>
               </div>
             ) : (
-              <button onClick={handleAdd} disabled={product.stock === 0}
+              <button onClick={handleAdd} disabled={(defaultVariant ? defaultVariant.stock === 0 : product.stock === 0)}
                 className="flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-xl text-white transition-all duration-200 disabled:opacity-40"
                 style={{
                   background: adding ? 'linear-gradient(135deg,#16a34a,#22c55e)' : 'linear-gradient(135deg,#0B4F9C,#1a70ff)',
