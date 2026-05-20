@@ -4,11 +4,13 @@ import {
   FiShoppingCart, FiHeart, FiStar, FiPackage, FiShield,
   FiChevronLeft, FiCheckCircle, FiAlertTriangle, FiInfo, FiArrowRight
 } from 'react-icons/fi';
+import { FaWhatsapp } from 'react-icons/fa';
 import { getProduct, getProducts, getStoreSettings, addReview, toggleWishlist } from '../services/api';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import ProductCard from '../components/common/ProductCard';
 import toast from 'react-hot-toast';
+import { buildProductWhatsappLink, openWhatsappLink } from '../utils/whatsapp';
 
 const TABS = [
   { id: 'desc', label: 'Description' },
@@ -124,6 +126,14 @@ export default function ProductDetailPage() {
   const finalTotal = Number(selectedPrice || 0) + gstAmount + shippingAmount;
   const cartItem = cart.items?.find(i => i.product._id === product._id && i.selectedSize === selectedSize);
   const qty = cartItem?.quantity || 0;
+  const enquiryQuantity = qty > 0 ? qty : Number(selectedMoq || 1);
+  const whatsappLink = buildProductWhatsappLink({
+    productName: product.name,
+    sku: product.sku,
+    price: selectedPrice,
+    size: selectedSize,
+    quantity: enquiryQuantity
+  });
   const images = product.images?.length > 0 ? product.images : ['https://images.unsplash.com/photo-1581093458791-9d42e3c7e117?w=700&q=80'];
 
   const handleWishlist = async () => {
@@ -170,6 +180,10 @@ export default function ProductDetailPage() {
     if (result?.success) {
       navigate('/checkout');
     }
+  };
+
+  const handleWhatsAppInquiry = () => {
+    openWhatsappLink(whatsappLink);
   };
 
   return (
@@ -413,6 +427,19 @@ export default function ProductDetailPage() {
                 <FiHeart fill={isWishlisted ? 'currentColor' : 'none'} />
               </button>
             </div>
+
+            <button
+              type="button"
+              onClick={handleWhatsAppInquiry}
+              className="flex w-full items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold text-white transition-all duration-200 hover:scale-[1.01]"
+              style={{
+                background: 'linear-gradient(135deg, #25D366, #1fa855)',
+                boxShadow: '0 12px 28px rgba(37,211,102,0.22)'
+              }}
+            >
+              <FaWhatsapp className="h-4 w-4" />
+              Enquire on WhatsApp
+            </button>
 
             {/* Certifications */}
             {product.certifications?.length > 0 && (

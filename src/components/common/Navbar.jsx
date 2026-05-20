@@ -62,7 +62,7 @@
 // Pan India Delivery •
 // Industrial Chemicals •
 // Detergent Solutions •
-// +91 98422 09470 •
+// +91 89404 48177 •
 // support@sribairavi.com •
 
 // </div>
@@ -359,7 +359,7 @@ Pan India Delivery •
 Industrial Chemicals •
 Detergent Solutions •
 Call :
-+91 98422 09470 •
++91 89404 48177 •
 
 </div>
 

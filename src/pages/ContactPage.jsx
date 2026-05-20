@@ -47,7 +47,7 @@ export default function ContactPage() {
         {/* Info column */}
         <div className="md:col-span-2 space-y-4">
           {[
-            { icon: FiPhone, label: 'Phone', val: '+91 98422 09470', href: 'tel:+919842209470', color: '#0B4F9C' },
+            { icon: FiPhone, label: 'Phone', val: '+91 89404 48177', href: 'tel:+918940448177', color: '#0B4F9C' },
             { icon: FiMail,  label: 'Email', val: 'info@sribairavichemicals.com', href: 'mailto:info@sribairavichemicals.com', color: '#0d9488' },
             { icon: FiMapPin,label: 'Address', val: 'Sri Bairavi Chemicals, Chennai, Tamil Nadu, India', color: '#d97706' },
             { icon: FiClock, label: 'Business Hours', val: 'Mon–Sat: 9:00 AM – 6:00 PM IST', color: '#7c3aed' },
@@ -70,7 +70,7 @@ export default function ContactPage() {
           ))}
 
           {/* WhatsApp */}
-          <a href="https://wa.me/919842209470?text=Hello%20Sri%20Bairavi%20Chemicals%2C%20I%20need%20a%20chemical%20quotation."
+          <a href="https://wa.me/918940448177?text=Hello%20Sri%20Bairavi%20Chemicals%2C%20send%20me%20your%20product%20list."
             target="_blank" rel="noreferrer"
             className="flex items-center justify-between gap-3 p-5 rounded-3xl transition-all duration-300 group"
             style={{ background: 'linear-gradient(135deg,#16a34a,#22c55e)', boxShadow: '0 8px 32px rgba(34,197,94,0.3)' }}

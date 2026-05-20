@@ -1130,7 +1130,7 @@ Years Experience
               style={{ background: 'white', color: '#0B4F9C', boxShadow: '0 8px 32px rgba(0,0,0,0.2)' }}>
               Request Quotation <FiArrowRight />
             </Link>
-            <a href="https://wa.me/919842209470?text=Hello%20Sri%20Bairavi%20Chemicals%2C%20I%20need%20a%20quotation."
+            <a href="https://wa.me/918940448177?text=Hello%20Sri%20Bairavi%20Chemicals%2C%20send%20me%20your%20product%20list."
               target="_blank" rel="noreferrer"
               className="btn-ghost !py-3.5 !px-8">
               <span className="flex items-center gap-2">💬 WhatsApp Us</span>

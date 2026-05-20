@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom';
 import { FiHeart, FiShoppingCart, FiStar, FiPackage, FiEye } from 'react-icons/fi';
+import { FaWhatsapp } from 'react-icons/fa';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { toggleWishlist } from '../../services/api';
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
+import { buildProductWhatsappLink, openWhatsappLink } from '../../utils/whatsapp';
 
 export default function ProductCard({ product }) {
   const { addToCart, cart, increaseQty, decreaseQty } = useCart();
@@ -20,6 +22,18 @@ export default function ProductCard({ product }) {
     ? ((defaultVariant.offerPrice > 0 && defaultVariant.offerPrice < defaultVariant.price) ? defaultVariant.price : 0)
     : product.originalPrice;
   const displaySize = defaultVariant?.size || product.packagingSize;
+  const cartItem = cart.items?.find(item =>
+    item.product._id === product._id && (!defaultVariant || item.selectedSize === defaultVariant.size)
+  );
+  const qty = cartItem?.quantity || 0;
+  const enquiryQuantity = qty > 0 ? qty : Number(defaultVariant?.moq || 1);
+  const whatsappLink = buildProductWhatsappLink({
+    productName: product.name,
+    sku: product.sku,
+    price: displayPrice,
+    size: displaySize,
+    quantity: enquiryQuantity
+  });
 
   useEffect(() => {
     if (!user?.wishlist) { setIsWishlisted(false); return; }
@@ -27,11 +41,6 @@ export default function ProductCard({ product }) {
       typeof item === 'object' ? item?._id === product._id : item === product._id
     ));
   }, [user, product._id]);
-
-  const cartItem = cart.items?.find(item =>
-    item.product._id === product._id && (!defaultVariant || item.selectedSize === defaultVariant.size)
-  );
-  const qty = cartItem?.quantity || 0;
 
   const handleWishlist = async (e) => {
     e.preventDefault(); e.stopPropagation();
@@ -50,6 +59,12 @@ export default function ProductCard({ product }) {
     setAdding(true);
     addToCart(product, defaultVariant?.moq || 1, defaultVariant?.size || '');
     setTimeout(() => setAdding(false), 600);
+  };
+
+  const handleWhatsAppInquiry = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    openWhatsappLink(whatsappLink);
   };
 
   const images = product.images?.length > 0 ? product.images : ['https://images.unsplash.com/photo-1581093458791-9d42e3c7e117?w=500&q=80'];
@@ -191,7 +206,7 @@ export default function ProductCard({ product }) {
                   style={{ color: '#0B4F9C', fontFamily: 'Inter, sans-serif' }}
                 >
                   ₹{displayPrice?.toLocaleString('en-IN')}
-                </span>
+                </span> 
                 {displayOriginalPrice > displayPrice && (
                   <span className="text-sm line-through text-gray-400 font-medium">
                     ₹{displayOriginalPrice?.toLocaleString('en-IN')}
@@ -228,6 +243,19 @@ export default function ProductCard({ product }) {
               </button>
             )}
           </div>
+
+          <button
+            type="button"
+            onClick={handleWhatsAppInquiry}
+            className="mt-2 flex w-full items-center justify-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:scale-[1.01]"
+            style={{
+              background: 'linear-gradient(135deg, #25D366, #1fa855)',
+              boxShadow: '0 8px 24px rgba(37,211,102,0.22)'
+            }}
+          >
+            <FaWhatsapp className="h-4 w-4" />
+            WhatsApp Enquiry
+          </button>
         </div>
       </div>
     </Link>

@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiLock } from 'react-icons/fi';
+import { FaWhatsapp } from 'react-icons/fa';
 import { createOrder, verifyPayment, getStoreSettings } from '../services/api';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
+import { buildCartWhatsappLink, openWhatsappLink } from '../utils/whatsapp';
 
 const loadRazorpayScript = () =>
   new Promise((resolve, reject) => {
@@ -70,6 +72,18 @@ export default function CheckoutPage() {
     : Number(storeSettings.shippingCharge || 0);
   const tax = Math.round(cart.totalAmount * (Number(storeSettings.gstPercentage || 0) / 100));
   const total = cart.totalAmount + shipping + tax;
+  const cartWhatsappLink = buildCartWhatsappLink({
+    items: cart.items.map((item) => ({
+      productName: item.product?.name,
+      sku: item.product?.sku,
+      size: item.selectedSize,
+      quantity: item.quantity,
+      price: item.price
+    })),
+    gstAmount: tax,
+    shippingAmount: shipping,
+    totalAmount: total
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -215,6 +229,18 @@ export default function CheckoutPage() {
               </div>
               <button type="submit" disabled={loading || !cart.items?.length} className="btn-primary w-full py-3 mt-5 text-base flex items-center justify-center gap-2">
                 {loading ? 'Placing Order...' : `Place Order • ₹${total.toFixed(2)}`}
+              </button>
+              <button
+                type="button"
+                onClick={() => openWhatsappLink(cartWhatsappLink)}
+                className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold text-white transition-all duration-200 hover:scale-[1.01]"
+                style={{
+                  background: 'linear-gradient(135deg, #25D366, #1fa855)',
+                  boxShadow: '0 12px 28px rgba(37,211,102,0.2)'
+                }}
+              >
+                <FaWhatsapp className="h-4 w-4" />
+                Request Quote on WhatsApp
               </button>
             </div>
           </div>

@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiMinus, FiPlus, FiTrash2, FiShoppingBag, FiArrowRight } from 'react-icons/fi';
+import { FaWhatsapp } from 'react-icons/fa';
 import { useCart } from '../context/CartContext';
 import { getStoreSettings } from '../services/api';
+import { buildCartWhatsappLink, openWhatsappLink } from '../utils/whatsapp';
 
 export default function CartPage() {
   const { cart, removeItem, clearCart, increaseQty, decreaseQty } = useCart();
@@ -30,6 +32,18 @@ export default function CartPage() {
     : Number(storeSettings.shippingCharge || 0);
   const tax = Math.round(cart.totalAmount * (Number(storeSettings.gstPercentage || 0) / 100));
   const total = cart.totalAmount + shipping + tax;
+  const cartWhatsappLink = buildCartWhatsappLink({
+    items: cart.items.map((item) => ({
+      productName: item.product?.name,
+      sku: item.product?.sku,
+      size: item.selectedSize,
+      quantity: item.quantity,
+      price: item.price
+    })),
+    gstAmount: tax,
+    shippingAmount: shipping,
+    totalAmount: total
+  });
 
   if (!cart.items?.length) return (
     <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
@@ -174,6 +188,18 @@ export default function CartPage() {
             </div>
             <button onClick={() => navigate('/checkout')} className="btn-primary w-full py-3 flex items-center justify-center gap-2 text-base">
               Proceed to Checkout <FiArrowRight />
+            </button>
+            <button
+              type="button"
+              onClick={() => openWhatsappLink(cartWhatsappLink)}
+              className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold text-white transition-all duration-200 hover:scale-[1.01]"
+              style={{
+                background: 'linear-gradient(135deg, #25D366, #1fa855)',
+                boxShadow: '0 12px 28px rgba(37,211,102,0.2)'
+              }}
+            >
+              <FaWhatsapp className="h-4 w-4" />
+              Get Quote on WhatsApp
             </button>
             <Link to="/products" className="block text-center text-sm text-primary-600 font-medium mt-4 hover:underline">
               Continue Shopping

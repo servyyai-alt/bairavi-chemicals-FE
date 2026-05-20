@@ -52,7 +52,7 @@ function ScrollToTop() {
 }
 
 function WhatsAppButton() {
-  const whatsappUrl = 'https://wa.me/919842209470?text=Hello%20Sri%20Bairavi%20Chemicals%2C%20I%20need%20a%20chemical%20inquiry.';
+  const whatsappUrl = 'https://wa.me/918940448177?text=Hello%20Sri%20Bairavi%20Chemicals%2C%20send%20me%20your%20product%20list.';
 
   return (
     <a

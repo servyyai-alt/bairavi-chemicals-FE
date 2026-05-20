@@ -96,7 +96,7 @@ export default function Footer() {
           <ul className="space-y-4">
             {[
               { icon: FiMapPin, text: 'Sri Bairavi Chemicals, Chennai, Tamil Nadu, India' },
-              { icon: FiPhone, text: '+91 98422 09470', href: 'tel:+919842209470' },
+              { icon: FiPhone, text: '+91 89404 48177', href: 'tel:+918940448177' },
               { icon: FiMail, text: 'info@sribairavichemicals.com', href: 'mailto:info@sribairavichemicals.com' },
             ].map((c, i) => (
               <li key={i} className="flex items-start gap-3">
