@@ -60,7 +60,7 @@ export default function AdminOrders() {
 
   return (
     <AdminLayout>
-      <div className="space-y-5 animate-fade-in">
+      <div className="space-y-5 animate-fade-in px-4 py-6">
         <div className="flex items-center gap-3 flex-wrap">
           <button onClick={() => setFilter('')} className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${!filter ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>All ({orders.length})</button>
           {STATUSES.map(s => {

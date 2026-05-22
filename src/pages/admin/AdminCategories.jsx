@@ -147,7 +147,7 @@ export default function AdminCategories() {
 
   return (
     <AdminLayout>
-      <div className="space-y-5 animate-fade-in">
+      <div className="space-y-5 animate-fade-in px-4 py-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-sm font-medium text-gray-500">

@@ -62,7 +62,7 @@ export default function Footer() {
           <ul className="space-y-2.5">
             {CATS.map(c => (
               <li key={c}>
-                <Link to={`/products?category=${encodeURIComponent(c)}`}
+                <Link to={`/products?category=${encodeURIComponent(c.toLowerCase())}`}
                   className="text-sm flex items-center gap-2 transition-colors hover:text-white group"
                   style={{ color: 'rgba(255,255,255,0.4)' }}>
                   <span className="w-1 h-1 rounded-full transition-all group-hover:w-3" style={{ background: '#22c55e' }} />

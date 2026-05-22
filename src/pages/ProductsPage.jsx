@@ -23,6 +23,18 @@ export default function ProductsPage() {
 
   const activeCat   = sp.get('category') || '';
   const activeSort  = sp.get('sort') || 'newest';
+  const normalizedActiveCat = activeCat.trim().toLowerCase();
+  const selectedCategory = categories.find((category) => {
+    const id = String(category._id || '').toLowerCase();
+    const slug = String(category.slug || '').toLowerCase();
+    const name = String(category.name || '').toLowerCase();
+    return normalizedActiveCat && (
+      id === normalizedActiveCat ||
+      slug === normalizedActiveCat ||
+      name === normalizedActiveCat
+    );
+  });
+  const resolvedCategoryValue = selectedCategory?._id || activeCat;
 
   const setParam = (k, v) => {
     const p = new URLSearchParams(sp);
@@ -41,7 +53,7 @@ export default function ProductsPage() {
     try {
       const params = { page, limit: 12 };
       if (search) params.search = search;
-      if (activeCat) params.category = activeCat;
+      if (resolvedCategoryValue) params.category = resolvedCategoryValue;
       if (activeSort === 'price_asc') { params.sortBy = 'price'; params.sortOrder = 'asc'; }
       if (activeSort === 'price_desc') { params.sortBy = 'price'; params.sortOrder = 'desc'; }
       if (activeSort === 'rating') { params.sortBy = 'rating'; params.sortOrder = 'desc'; }
@@ -50,7 +62,7 @@ export default function ProductsPage() {
       setTotal(data.total || 0);
     } catch {}
     setLoading(false);
-  }, [page, search, activeCat, activeSort]);
+  }, [page, search, resolvedCategoryValue, activeSort]);
 
   useEffect(() => { fetchProducts(); }, [fetchProducts]);
 
@@ -149,7 +161,7 @@ export default function ProductsPage() {
                   {activeCat && (
                     <span className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full"
                       style={{ background: 'rgba(11,79,156,0.1)', color: '#0B4F9C', border: '1px solid rgba(11,79,156,0.2)' }}>
-                      {categories.find(c => c._id === activeCat)?.name} <button onClick={() => setParam('category', '')}><FiX className="w-3 h-3" /></button>
+                      {selectedCategory?.name || activeCat} <button onClick={() => setParam('category', '')}><FiX className="w-3 h-3" /></button>
                     </span>
                   )}
                 </>

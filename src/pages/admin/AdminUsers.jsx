@@ -40,7 +40,7 @@ export default function AdminUsers() {
 
   return (
     <AdminLayout>
-      <div className="space-y-5 animate-fade-in">
+      <div className="space-y-5 animate-fade-in px-4 py-6">
         {loading ? (
           <Loader />
         ) : (

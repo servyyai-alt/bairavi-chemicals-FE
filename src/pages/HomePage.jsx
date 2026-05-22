@@ -26,94 +26,94 @@ import whyUsImg from "../assets/company.png";
 /* ── Constants ────────────────────────────────────────────────────────── */
 const CATEGORIES = [
 
-{
-name:"Phenyl Compound",
-slug:"phenyl-compound",
-image:phenylImg
-},
+  {
+    name: "Phenyl Compound",
+    slug: "phenyl-compound",
+    image: phenylImg
+  },
 
-{
-name:"Detergent Liquid",
-slug:"detergent-liquid",
-image:detergentImg1
-},
+  {
+    name: "Detergent Liquid",
+    slug: "detergent-liquid",
+    image: detergentImg1
+  },
 
-{
-name:"Dishwash Liquid",
-slug:"dishwash-liquid",
-image:dishwashImg
-},
+  {
+    name: "Dishwash Liquid",
+    slug: "dishwash-liquid",
+    image: dishwashImg
+  },
 
-{
-name:"Floor Cleaner",
-slug:"floor-cleaner",
-image:floorImg
-},
+  {
+    name: "Floor Cleaner",
+    slug: "floor-cleaner",
+    image: floorImg
+  },
 
-{
-name:"Toilet Cleaner",
-slug:"toilet-cleaner",
-image:toiletImg
-},
+  {
+    name: "Toilet Cleaner",
+    slug: "toilet-cleaner",
+    image: toiletImg
+  },
 
-{
-name:"Tiles Cleaner",
-slug:"tiles-cleaner",
-image:tilesImg
-},
+  {
+    name: "Tiles Cleaner",
+    slug: "tiles-cleaner",
+    image: tilesImg
+  },
 
-{
-name:"Fabric Conditioner",
-slug:"fabric-conditioner",
-image:fabricImg
-},
+  {
+    name: "Fabric Conditioner",
+    slug: "fabric-conditioner",
+    image: fabricImg
+  },
 
-{
-name:"Soap Oil",
-slug:"soap-oil",
-image:soapoilImg
-},
+  {
+    name: "Soap Oil",
+    slug: "soap-oil",
+    image: soapoilImg
+  },
 
-{
-name:"Perfumed Phenyl",
-slug:"perfumed-phenyl",
-image:perfumedImg
-}
+  {
+    name: "Perfumed Phenyl",
+    slug: "perfumed-phenyl",
+    image: perfumedImg
+  }
 
 ];
 
 const STATS = [
-  { value:'500+', label:'Chemical Products'},
-  { value:'1,200+', label:'Happy Clients'},
-  { value:'15+', label:'Years of Trust'},
-  { value:'98%', label:'On-time Delivery'}
+  { value: '500+', label: 'Chemical Products' },
+  { value: '1,200+', label: 'Happy Clients' },
+  { value: '15+', label: 'Years of Trust' },
+  { value: '98%', label: 'On-time Delivery' }
 ];
 
 const FEATURES = [
 
-{
-title:"ISO Certified Quality",
-desc:
-"Every batch tested and supplied with proper quality assurance."
-},
+  {
+    title: "ISO Certified Quality",
+    desc:
+      "Every batch tested and supplied with proper quality assurance."
+  },
 
-{
-title:"Reliable Pan-India Delivery",
-desc:
-"Safe packaging and timely delivery across industries."
-},
+  {
+    title: "Reliable Pan-India Delivery",
+    desc:
+      "Safe packaging and timely delivery across industries."
+  },
 
-{
-title:"Technical Support",
-desc:
-"Guidance on chemical selection, applications and handling."
-},
+  {
+    title: "Technical Support",
+    desc:
+      "Guidance on chemical selection, applications and handling."
+  },
 
-{
-title:"Flexible Packaging",
-desc:
-"Drums, bags, canisters and bulk packaging as required."
-}
+  {
+    title: "Flexible Packaging",
+    desc:
+      "Drums, bags, canisters and bulk packaging as required."
+  }
 
 ]
 
@@ -222,7 +222,7 @@ export default function HomePage() {
         ]);
         setFeatured(pRes.data.products || []);
         setCategories(cRes.data.categories?.length ? cRes.data.categories : CATEGORIES.map((c, i) => ({ ...c, _id: String(i) })));
-      } catch {}
+      } catch { }
       setLoading(false);
     })();
   }, []);
@@ -231,7 +231,7 @@ export default function HomePage() {
     <div className="min-h-screen">
 
       {/* ── HERO ─────────────────────────────────────────────────────── */}
-   <section className="
+      <section className="
 relative
 overflow-hidden
 bg-gradient-to-br
@@ -242,9 +242,9 @@ min-h-screen
 flex
 items-center">
 
-{/* Background blur */}
+        {/* Background blur */}
 
-<div className="
+        <div className="
 absolute
 top-0
 right-0
@@ -256,7 +256,7 @@ rounded-full
 opacity-40"/>
 
 
-<div className="
+        <div className="
 absolute
 bottom-0
 left-0
@@ -269,7 +269,7 @@ opacity-40"/>
 
 
 
-<div className="
+        <div className="
 max-w-7xl
 mx-auto
 px-6
@@ -280,11 +280,11 @@ items-center">
 
 
 
-{/* LEFT */}
+          {/* LEFT */}
 
-<div>
+          <div>
 
-<div className="
+            <div className="
 inline-flex
 px-5 py-2
 rounded-full
@@ -294,70 +294,70 @@ border-green-200
 text-green-700
 font-medium">
 
-Trusted Since 2009 • ISO Certified
+              Trusted Since 2009 • ISO Certified
 
-</div>
+            </div>
 
 
 
-<h1 className="
+            <h1 className="
 mt-8
 text-6xl
 lg:text-8xl
 font-bold
 leading-tight">
 
-<span className="text-[#003B7A]">
+              <span className="text-[#003B7A]">
 
-Sri Bairavi
+                Sri Bairavi
 
-</span>
+              </span>
 
-<br/>
+              <br />
 
-<span className="text-[#003B7A]">
+              <span className="text-[#003B7A]">
 
-Chemical
+                Chemical
 
-</span>
+              </span>
 
-<br/>
+              <br />
 
-<span className="text-[#4E9A2D]">
+              <span className="text-[#4E9A2D]">
 
-Solutions
+                Solutions
 
-</span>
+              </span>
 
-</h1>
+            </h1>
 
 
 
-<p className="
+            <p className="
 mt-8
 text-gray-600
 text-lg
 leading-9
 max-w-xl">
 
-Manufacturing premium detergent
-liquids, cleaning chemicals and
-industrial solutions with certified
-quality and bulk supply across India.
+              Manufacturing premium detergent
+              liquids, cleaning chemicals and
+              industrial solutions with certified
+              quality and bulk supply across India.
 
-</p>
+            </p>
 
 
 
-{/* Buttons */}
+            {/* Buttons */}
 
-<div className="flex gap-5 mt-10">
+            <div className="flex gap-5 mt-10">
 
-{/* Request Quote */}
+              {/* Request Quote */}
 
-<Link
-to="/contact"
-className="
+              <Link
+                to="/contact"
+                className="
 bg-[#0056A6]
 text-white
 px-8
@@ -370,17 +370,17 @@ duration-300
 inline-flex
 items-center">
 
-Request Quote
+                Request Quote
 
-</Link>
+              </Link>
 
 
 
-{/* View Products */}
+              {/* View Products */}
 
-<Link
-to="/products"
-className="
+              <Link
+                to="/products"
+                className="
 border
 border-[#0056A6]
 text-[#0056A6]
@@ -394,138 +394,138 @@ duration-300
 inline-flex
 items-center">
 
-View Products
+                View Products
 
-</Link>
-
-
-</div>
+              </Link>
 
 
+            </div>
 
 
-{/* Stats */}
 
-<div className="
+
+            {/* Stats */}
+
+            <div className="
 flex
 gap-10
 mt-16
 flex-wrap">
 
 
-<div>
+              <div>
 
-<h2 className="
+                <h2 className="
 text-4xl
 font-bold
 text-[#003B7A]">
 
-15+
+                  15+
 
-</h2>
+                </h2>
 
-<p className="text-gray-500">
+                <p className="text-gray-500">
 
-Years Experience
+                  Years Experience
 
-</p>
+                </p>
 
-</div>
-
-
+              </div>
 
 
-<div>
 
-<h2 className="
+
+              <div>
+
+                <h2 className="
 text-4xl
 font-bold
 text-[#003B7A]">
 
-500+
+                  500+
 
-</h2>
+                </h2>
 
-<p className="text-gray-500">
+                <p className="text-gray-500">
 
-Products
+                  Products
 
-</p>
+                </p>
 
-</div>
-
-
+              </div>
 
 
-<div>
 
-<h2 className="
+
+              <div>
+
+                <h2 className="
 text-4xl
 font-bold
 text-[#003B7A]">
 
-300+
+                  300+
 
-</h2>
+                </h2>
 
-<p className="text-gray-500">
+                <p className="text-gray-500">
 
-Clients
+                  Clients
 
-</p>
+                </p>
 
-</div>
+              </div>
 
 
 
-<div>
+              <div>
 
-<h2 className="
+                <h2 className="
 text-4xl
 font-bold
 text-[#003B7A]">
 
-24/7
+                  24/7
 
-</h2>
+                </h2>
 
-<p className="text-gray-500">
+                <p className="text-gray-500">
 
-Support
+                  Support
 
-</p>
+                </p>
 
-</div>
-
-
-</div>
-
-</div>
+              </div>
 
 
+            </div>
+
+          </div>
 
 
 
-{/* RIGHT */}
-
-<div className="relative">
 
 
-<img
-src={productsHero}
-alt=""
-className="
+          {/* RIGHT */}
+
+          <div className="relative">
+
+
+            <img
+              src={productsHero}
+              alt=""
+              className="
 w-full
 object-contain
 drop-shadow-2xl
 animate-float"
-/>
+            />
 
 
 
-{/* Floating card */}
+            {/* Floating card */}
 
-<div className="
+            <div className="
 absolute
 top-10
 left-0
@@ -534,28 +534,28 @@ shadow-xl
 rounded-2xl
 px-6 py-4">
 
-<p className="
+              <p className="
 font-semibold
 text-[#003B7A]">
 
-Premium Detergents
+                Premium Detergents
 
-</p>
+              </p>
 
-<p className="
+              <p className="
 text-sm
 text-gray-500">
 
-Bulk Manufacturing
+                Bulk Manufacturing
 
-</p>
+              </p>
 
-</div>
-
-
+            </div>
 
 
-<div className="
+
+
+            <div className="
 absolute
 bottom-10
 right-0
@@ -564,78 +564,78 @@ shadow-xl
 rounded-2xl
 px-6 py-4">
 
-<p className="
+              <p className="
 font-semibold
 text-[#003B7A]">
 
-Industrial Chemicals
+                Industrial Chemicals
 
-</p>
+              </p>
 
-<p className="
+              <p className="
 text-sm
 text-gray-500">
 
-Pan India Supply
+                Pan India Supply
 
-</p>
+              </p>
 
-</div>
-
-
-</div>
+            </div>
 
 
-</div>
+          </div>
 
-</section>
+
+        </div>
+
+      </section>
 
 
 
       {/* ── CATEGORIES ──────────────────────────────────────────────── */}
-     <section className="py-16 md:py-24 bg-[#F8FCFF]">
+      <section className="py-16 md:py-24 bg-[#F8FCFF]">
 
-<div className="max-w-7xl mx-auto px-4 md:px-6">
+        <div className="max-w-7xl mx-auto px-4 md:px-6">
 
-{/* Heading */}
+          {/* Heading */}
 
-<div className="flex justify-between items-end mb-10 md:mb-14">
+          <div className="flex justify-between items-end mb-10 md:mb-14">
 
-<div>
-<p className="text-[#4E9A2D] font-medium text-sm md:text-base">
-Our Products
-</p>
+            <div>
+              <p className="text-[#4E9A2D] font-medium text-sm md:text-base">
+                Our Products
+              </p>
 
-<h2 className="
+              <h2 className="
 text-3xl
 md:text-5xl
 font-bold
 text-[#003B7A]">
 
-Browse Categories
+                Browse Categories
 
-</h2>
-</div>
+              </h2>
+            </div>
 
-<Link
-to="/products"
-className="
+            <Link
+              to="/products"
+              className="
 text-[#0056A6]
 font-medium
 text-sm
 md:text-base">
 
-View All →
+              View All →
 
-</Link>
+            </Link>
 
-</div>
+          </div>
 
 
 
-{/* Cards */}
+          {/* Cards */}
 
-<div className="
+          <div className="
 grid
 grid-cols-2
 sm:grid-cols-2
@@ -644,15 +644,15 @@ lg:grid-cols-4
 gap-4
 md:gap-7">
 
-{
+            {
 
-categories.map((cat)=>(
+              categories.map((cat) => (
 
-<Link
-key={cat._id || cat.slug}
-to={`/products?category=${cat.slug}`}
+                <Link
+                  key={cat._id || cat.slug}
+                  to={`/products?category=${encodeURIComponent(cat._id || cat.slug || cat.name)}`}
 
-className="
+                  className="
 group
 bg-white
 rounded-3xl
@@ -663,9 +663,9 @@ duration-300
 border
 border-gray-100">
 
-{/* IMAGE */}
+                  {/* IMAGE */}
 
-<div className="
+                  <div className="
 h-[180px]
 sm:h-[220px]
 md:h-[260px]
@@ -675,60 +675,60 @@ justify-center
 bg-[#F8FCFF]
 overflow-hidden">
 
-<img
-src={cat.image || FALLBACK_CATEGORY_IMAGE}
-alt={cat.name}
+                    <img
+                      src={cat.image || FALLBACK_CATEGORY_IMAGE}
+                      alt={cat.name}
 
-className="
+                      className="
 w-full
 h-full
 object-contain
 group-hover:scale-105
 duration-500
 p-2"
-/>
+                    />
 
-</div>
+                  </div>
 
 
 
-{/* CONTENT */}
+                  {/* CONTENT */}
 
-<div className="p-4 md:p-5">
+                  <div className="p-4 md:p-5">
 
-<h3 className="
+                    <h3 className="
 text-[#003B7A]
 font-semibold
 text-sm
 md:text-xl">
 
-{cat.name}
+                      {cat.name}
 
-</h3>
+                    </h3>
 
-<p className="
+                    <p className="
 text-gray-500
 text-xs
 md:text-sm
 mt-2">
 
-View Products →
+                      View Products →
 
-</p>
+                    </p>
 
-</div>
+                  </div>
 
-</Link>
+                </Link>
 
-))
+              ))
 
-}
+            }
 
-</div>
+          </div>
 
-</div>
+        </div>
 
-</section>
+      </section>
 
       {/* ── FEATURED PRODUCTS ────────────────────────────────────────── */}
       <section className="section bg-white">
@@ -763,30 +763,30 @@ View Products →
       </section>
 
       {/* ── STATS ────────────────────────────────────────────────────── */}
-    <section
-className="
+      <section
+        className="
 relative
 overflow-hidden
 py-24"
 
-style={{
-background:
-"linear-gradient(135deg,#021327 0%,#003B7A 50%,#0056A6 100%)"
-}}>
+        style={{
+          background:
+            "linear-gradient(135deg,#021327 0%,#003B7A 50%,#0056A6 100%)"
+        }}>
 
-{/* Grid background */}
+        {/* Grid background */}
 
-<div className="
+        <div className="
 absolute
 inset-0
 opacity-10
 bg-[linear-gradient(rgba(255,255,255,.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.1)_1px,transparent_1px)]
 bg-[size:40px_40px]"
-/>
+        />
 
 
 
-<div className="
+        <div className="
 max-w-7xl
 mx-auto
 px-6
@@ -794,49 +794,49 @@ relative
 z-10">
 
 
-<div className="
+          <div className="
 text-center
 mb-16">
 
-<p className="
+            <p className="
 text-green-400
 font-medium">
 
-Trusted Across Industries
+              Trusted Across Industries
 
-</p>
+            </p>
 
 
-<h2 className="
+            <h2 className="
 text-5xl
 font-bold
 text-white
 mt-3">
 
-Numbers Speak Quality
+              Numbers Speak Quality
 
-</h2>
+            </h2>
 
-</div>
-
-
+          </div>
 
 
-<div className="
+
+
+          <div className="
 grid
 grid-cols-2
 md:grid-cols-4
 gap-8">
 
-{
+            {
 
-STATS.map((item,index)=>(
+              STATS.map((item, index) => (
 
-<div
+                <div
 
-key={index}
+                  key={index}
 
-className="
+                  className="
 bg-white/5
 backdrop-blur-sm
 border
@@ -850,18 +850,18 @@ hover:border-green-400/30">
 
 
 
-<h2 className="
+                  <h2 className="
 text-5xl
 font-bold
 text-white">
 
-{item.value}
+                    {item.value}
 
-</h2>
+                  </h2>
 
 
 
-<div className="
+                  <div className="
 w-14
 h-[3px]
 bg-[#4E9A2D]
@@ -870,32 +870,32 @@ my-5"/>
 
 
 
-<p className="
+                  <p className="
 text-gray-300
 text-lg">
 
-{item.label}
+                    {item.label}
 
-</p>
+                  </p>
 
 
-</div>
+                </div>
 
-))
+              ))
 
-}
+            }
 
-</div>
+          </div>
 
-</div>
+        </div>
 
-</section>
+      </section>
 
       {/* ── WHY CHOOSE US ────────────────────────────────────────────── */}
-     <section
-className="py-24 bg-[#F8FCFF]">
+      <section
+        className="py-24 bg-[#F8FCFF]">
 
-<div className="
+        <div className="
 max-w-7xl
 mx-auto
 px-6
@@ -905,96 +905,96 @@ gap-20
 items-center">
 
 
-{/* LEFT */}
+          {/* LEFT */}
 
-<div>
+          <div>
 
-<p className="
+            <p className="
 text-[#4E9A2D]
 font-medium
 mb-4">
 
-Why Choose Us
+              Why Choose Us
 
-</p>
+            </p>
 
 
-<h2 className="
+            <h2 className="
 text-5xl
 font-bold
 text-[#003B7A]
 leading-tight">
 
-Built on Quality,
-<br/>
+              Built on Quality,
+              <br />
 
-Backed by Expertise
+              Backed by Expertise
 
-</h2>
+            </h2>
 
 
 
-<p className="
+            <p className="
 mt-8
 text-gray-600
 leading-8">
 
-With years of experience,
-Sri Bairavi Chemicals supplies
-industrial and speciality chemicals
-with quality assurance, competitive pricing
-and dependable delivery.
+              With years of experience,
+              Sri Bairavi Chemicals supplies
+              industrial and speciality chemicals
+              with quality assurance, competitive pricing
+              and dependable delivery.
 
-</p>
+            </p>
 
 
 
-<div className="
+            <div className="
 space-y-8
 mt-10">
 
-{
+              {
 
-FEATURES.map((item,index)=>(
+                FEATURES.map((item, index) => (
 
-<div
-key={index}
-className="
+                  <div
+                    key={index}
+                    className="
 border-l-4
 border-[#4E9A2D]
 pl-5">
 
-<h4 className="
+                    <h4 className="
 font-semibold
 text-xl
 text-[#003B7A]">
 
-{item.title}
+                      {item.title}
 
-</h4>
+                    </h4>
 
-<p className="
+                    <p className="
 text-gray-500
 mt-2">
 
-{item.desc}
+                      {item.desc}
 
-</p>
+                    </p>
 
-</div>
+                  </div>
 
-))
+                ))
 
-}
+              }
 
-</div>
-
-
+            </div>
 
 
-<Link
-to="/contact"
-className="
+
+
+            <Link
+              to="/contact"
+              className="
 inline-block
 mt-10
 bg-[#0056A6]
@@ -1002,40 +1002,40 @@ text-white
 px-8 py-4
 rounded-xl">
 
-Get Bulk Quotation
+              Get Bulk Quotation
 
-</Link>
-
-
-</div>
+            </Link>
 
 
+          </div>
 
 
 
-{/* RIGHT IMAGE */}
 
-<div className="relative">
 
-<img
+          {/* RIGHT IMAGE */}
 
-src={whyUsImg}
+          <div className="relative">
 
-alt=""
+            <img
 
-className="
+              src={whyUsImg}
+
+              alt=""
+
+              className="
 rounded-[40px]
 shadow-2xl
 w-full
 object-cover"
 
-/>
+            />
 
 
 
-{/* Floating Card */}
+            {/* Floating Card */}
 
-<div className="
+            <div className="
 absolute
 bottom-8
 left-8
@@ -1044,30 +1044,30 @@ rounded-3xl
 shadow-xl
 px-8 py-5">
 
-<h3 className="
+              <h3 className="
 text-4xl
 font-bold
 text-[#003B7A]">
 
-15+
+                15+
 
-</h3>
+              </h3>
 
-<p className="
+              <p className="
 text-gray-500">
 
-Years Experience
+                Years Experience
 
-</p>
+              </p>
 
-</div>
+            </div>
 
-</div>
+          </div>
 
 
-</div>
+        </div>
 
-</section>
+      </section>
 
       {/* ── TESTIMONIALS ─────────────────────────────────────────────── */}
       <section className="section bg-white">
