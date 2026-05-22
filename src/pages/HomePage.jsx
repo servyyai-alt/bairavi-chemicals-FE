@@ -731,7 +731,7 @@ mt-2">
       </section>
 
       {/* ── FEATURED PRODUCTS ────────────────────────────────────────── */}
-      <section className="section bg-white">
+      {/* <section className="section bg-white">
         <div className="container-xl">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
             <div>
@@ -760,7 +760,7 @@ mt-2">
             </div>
           )}
         </div>
-      </section>
+      </section> */}
 
       {/* ── STATS ────────────────────────────────────────────────────── */}
       <section
