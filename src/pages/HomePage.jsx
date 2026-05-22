@@ -837,23 +837,23 @@ gap-8">
                   key={index}
 
                   className="
-bg-white/5
-backdrop-blur-sm
-border
-border-white/10
-rounded-3xl
-p-8
-text-center
-hover:-translate-y-3
-duration-300
-hover:border-green-400/30">
-
-
+                             bg-white/5
+                             backdrop-blur-sm
+                             border
+                             border-white/10
+                             rounded-3xl
+                             p-8
+                             text-center
+                             hover:-translate-y-3
+                             duration-300
+                             hover:border-green-400/30">
+                             
+                             
 
                   <h2 className="
-text-5xl
-font-bold
-text-white">
+                                 text-3xl md:text-4xl lg:text-5xl
+                                 font-bold
+                                 text-white">
 
                     {item.value}
 
