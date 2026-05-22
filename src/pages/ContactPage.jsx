@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FiMail, FiPhone, FiMapPin, FiSend, FiClock, FiArrowRight } from 'react-icons/fi';
 import toast from 'react-hot-toast';
+import { createInquiry } from '../services/api';
 
 export default function ContactPage() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
@@ -8,11 +9,16 @@ export default function ContactPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitting(true);
-    await new Promise(r => setTimeout(r, 900));
-    toast.success('Inquiry sent! We will get back to you within 24 hours.');
-    setForm({ name: '', email: '', phone: '', subject: '', message: '' });
-    setSubmitting(false);
+    try {
+      setSubmitting(true);
+      await createInquiry(form);
+      toast.success('Inquiry sent! We will get back to you within 24 hours.');
+      setForm({ name: '', email: '', phone: '', subject: '', message: '' });
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to send inquiry');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const f = k => e => setForm(p => ({ ...p, [k]: e.target.value }));

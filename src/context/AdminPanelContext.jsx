@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { getAllOrders } from '../services/api';
+import { getAllInquiries, getAllOrders } from '../services/api';
 
 const AdminPanelContext = createContext(null);
 
@@ -9,6 +9,7 @@ const SEARCH_PLACEHOLDERS = {
   '/admin/products': 'Search products, categories, tags...',
   '/admin/categories': 'Search categories or records...',
   '/admin/orders': 'Search order ID, customer, phone, product, status...',
+  '/admin/inquiries': 'Search inquiries, names, email, phone, subject...',
   '/admin/users': 'Search users, phone, email, role...'
 };
 
@@ -25,13 +26,33 @@ function readStoredNotifications() {
 
 function buildOrderNotification(order, unread = false) {
   return {
-    id: order._id,
-    orderId: order._id,
+    id: `order-${order._id}`,
+    entityId: order._id,
+    type: 'order',
+    href: '/admin/orders',
+    title: 'New order received',
     customerName: order.user?.name || order.shippingAddress?.fullName || 'New customer',
     phone: order.shippingAddress?.phone || order.user?.phone || '',
     totalAmount: order.totalPrice || 0,
     createdAt: order.createdAt,
     status: order.orderStatus || 'pending',
+    unread
+  };
+}
+
+function buildInquiryNotification(inquiry, unread = false) {
+  return {
+    id: `inquiry-${inquiry._id}`,
+    entityId: inquiry._id,
+    type: 'inquiry',
+    href: '/admin/inquiries',
+    title: 'New inquiry received',
+    customerName: inquiry.name || 'New inquiry',
+    phone: inquiry.phone || '',
+    email: inquiry.email || '',
+    subject: inquiry.subject || 'General inquiry',
+    createdAt: inquiry.createdAt,
+    status: inquiry.status || 'new',
     unread
   };
 }
@@ -43,6 +64,7 @@ export function AdminPanelProvider({ children }) {
   const [notificationOpen, setNotificationOpen] = useState(false);
   const initializedRef = useRef(false);
   const knownOrderIdsRef = useRef(new Set());
+  const knownInquiryIdsRef = useRef(new Set());
   const pollRef = useRef(null);
 
   useEffect(() => {
@@ -60,68 +82,74 @@ export function AdminPanelProvider({ children }) {
   useEffect(() => {
     let cancelled = false;
 
-    const syncOrders = async () => {
+    const syncNotifications = async () => {
       try {
-        const { data } = await getAllOrders();
+        const [{ data: orderData }, { data: inquiryData }] = await Promise.all([
+          getAllOrders(),
+          getAllInquiries()
+        ]);
+
         if (cancelled) return;
 
-        const orders = Array.isArray(data.orders) ? data.orders : [];
-        const nextIds = new Set(orders.map(order => order._id));
+        const orders = Array.isArray(orderData.orders) ? orderData.orders : [];
+        const inquiries = Array.isArray(inquiryData.inquiries) ? inquiryData.inquiries : [];
+        const nextOrderIds = new Set(orders.map((order) => order._id));
+        const nextInquiryIds = new Set(inquiries.map((inquiry) => inquiry._id));
 
         if (!initializedRef.current) {
-          knownOrderIdsRef.current = nextIds;
-          setNotifications(prev => {
-            const existingMap = new Map(prev.map(item => [item.id, item]));
-            const merged = orders
-              .slice()
+          knownOrderIdsRef.current = nextOrderIds;
+          knownInquiryIdsRef.current = nextInquiryIds;
+
+          setNotifications((prev) => {
+            const existingMap = new Map(prev.map((item) => [item.id, item]));
+            return [
+              ...orders.map((order) => buildOrderNotification(order, false)),
+              ...inquiries.map((inquiry) => buildInquiryNotification(inquiry, false))
+            ]
               .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
               .slice(0, 8)
-              .map(order => existingMap.get(order._id) || buildOrderNotification(order, false));
-            return merged;
+              .map((item) => existingMap.get(item.id) || item);
           });
+
           initializedRef.current = true;
           return;
         }
 
-        const newOrders = orders.filter(order => !knownOrderIdsRef.current.has(order._id));
-        knownOrderIdsRef.current = nextIds;
+        const newOrders = orders.filter((order) => !knownOrderIdsRef.current.has(order._id));
+        const newInquiries = inquiries.filter((inquiry) => !knownInquiryIdsRef.current.has(inquiry._id));
+        knownOrderIdsRef.current = nextOrderIds;
+        knownInquiryIdsRef.current = nextInquiryIds;
 
-        setNotifications(prev => {
-          const existingMap = new Map(prev.map(item => [item.id, item]));
-          const next = orders
-            .slice()
+        setNotifications((prev) => {
+          const existingMap = new Map(prev.map((item) => [item.id, item]));
+          const next = [
+            ...orders.map((order) => buildOrderNotification(order, false)),
+            ...inquiries.map((inquiry) => buildInquiryNotification(inquiry, false))
+          ]
             .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
             .slice(0, 8)
-            .map(order => {
-              const existing = existingMap.get(order._id);
-              if (existing) {
-                return {
-                  ...existing,
-                  customerName: order.user?.name || order.shippingAddress?.fullName || existing.customerName,
-                  phone: order.shippingAddress?.phone || order.user?.phone || existing.phone,
-                  totalAmount: order.totalPrice || existing.totalAmount,
-                  createdAt: order.createdAt || existing.createdAt,
-                  status: order.orderStatus || existing.status
-                };
-              }
-              return buildOrderNotification(order, false);
+            .map((item) => {
+              const existing = existingMap.get(item.id);
+              return existing ? { ...existing, ...item } : item;
             });
 
-          if (newOrders.length === 0) return next;
+          if (newOrders.length === 0 && newInquiries.length === 0) {
+            return next;
+          }
 
-          return next.map(item =>
-            newOrders.some(order => order._id === item.id)
-              ? { ...item, unread: true }
-              : item
-          );
+          return next.map((item) => {
+            const isNewOrder = item.type === 'order' && newOrders.some((order) => order._id === item.entityId);
+            const isNewInquiry = item.type === 'inquiry' && newInquiries.some((inquiry) => inquiry._id === item.entityId);
+            return isNewOrder || isNewInquiry ? { ...item, unread: true } : item;
+          });
         });
       } catch {
         // Ignore polling errors; the panel should remain usable.
       }
     };
 
-    syncOrders();
-    pollRef.current = setInterval(syncOrders, 15000);
+    syncNotifications();
+    pollRef.current = setInterval(syncNotifications, 15000);
 
     return () => {
       cancelled = true;
@@ -130,14 +158,14 @@ export function AdminPanelProvider({ children }) {
   }, []);
 
   const currentSearch = searchByPath[pathname] || '';
-  const unreadCount = notifications.filter(item => item.unread).length;
+  const unreadCount = notifications.filter((item) => item.unread).length;
 
-  const setCurrentSearch = value => {
-    setSearchByPath(prev => ({ ...prev, [pathname]: value }));
+  const setCurrentSearch = (value) => {
+    setSearchByPath((prev) => ({ ...prev, [pathname]: value }));
   };
 
   const markAllAsRead = () => {
-    setNotifications(prev => prev.map(item => ({ ...item, unread: false })));
+    setNotifications((prev) => prev.map((item) => ({ ...item, unread: false })));
   };
 
   const value = useMemo(

@@ -75,6 +75,11 @@ export const getAllOrders = () => API.get('/orders/admin/all');
 export const updateOrderStatus = (id, data) => API.put(`/orders/${id}/status`, data);
 export const getDashboardStats = () => API.get('/orders/admin/dashboard');
 
+// Inquiries
+export const createInquiry = (data) => API.post('/inquiries', data);
+export const getAllInquiries = () => API.get('/inquiries/admin/all');
+export const updateInquiryStatus = (id, data) => API.put(`/inquiries/${id}/status`, data);
+
 // Admin Users
 export const getAllUsers = () => API.get('/users');
 export const updateUser = (id, data) => API.put(`/users/${id}`, data);
