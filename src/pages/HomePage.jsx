@@ -22,6 +22,8 @@ import fabricImg from "../assets/fabric-conditioner.png";
 import soapoilImg from "../assets/soap-oil.png";
 import perfumedImg from "../assets/perfumed-phenyl.png";
 import whyUsImg from "../assets/company.png";
+import deliveringBg from "../assets/Delivering.png";
+import contactBg from "../assets/contact.png";
 
 /* ── Constants ────────────────────────────────────────────────────────── */
 const CATEGORIES = [
@@ -117,13 +119,36 @@ const FEATURES = [
 
 ]
 
-const TESTIMONIALS = [
-  { name: 'Ramesh Kumar', company: 'Apex Textiles Ltd', rating: 5, initial: 'R', text: 'Consistent quality and timely delivery. Sri Bairavi is our go-to supplier for industrial chemicals.' },
-  { name: 'Dr. Meena Priya', company: 'BioLab Research Institute', rating: 5, initial: 'M', text: 'Lab-grade reagents at competitive prices. Purity certificates provided with every batch — very professional.' },
-  { name: 'Suresh Babu', company: 'Metro Water Works', rating: 5, initial: 'S', text: 'Their water treatment chemicals have been integral to our plant operations for 3+ years. Zero quality complaints.' },
-];
-
 const FALLBACK_CATEGORY_IMAGE = productsHero;
+
+const formatReviewDate = (value) => {
+  if (!value) return 'Verified Client';
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return 'Verified Client';
+
+  return date.toLocaleDateString('en-IN', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric'
+  });
+};
+
+const extractTestimonials = (products = []) => products
+  .flatMap((product) =>
+    (product.reviews || []).map((review) => ({
+      id: review._id || `${product._id}-${review.user}`,
+      name: review.name || 'Verified Client',
+      company: product.name || 'Sri Bairavi Chemicals',
+      rating: Math.max(1, Math.min(5, Number(review.rating || 5))),
+      initial: (review.name || 'V').trim().charAt(0).toUpperCase() || 'V',
+      text: review.comment || 'Trusted by Sri Bairavi Chemicals clients.',
+      date: formatReviewDate(review.updatedAt || review.createdAt),
+      sortValue: review.updatedAt || review.createdAt || ''
+    }))
+  )
+  .sort((a, b) => new Date(b.sortValue) - new Date(a.sortValue))
+  .slice(0, 3);
 
 /* ── Animated particle background ───────────────────────────────────── */
 function HeroParticles() {
@@ -210,19 +235,29 @@ function Counter({ value, label, icon }) {
 export default function HomePage() {
   const [featured, setFeatured] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
       try {
-        const [pRes, cRes] = await Promise.all([
+        const [pRes, cRes, reviewRes] = await Promise.all([
           getProducts({ featured: true, limit: 8 }),
-          getCategories()
+          getCategories(),
+          getProducts({ limit: 24 })
         ]);
+        const reviewProducts = reviewRes.data.products || [];
+        const dbTestimonials = extractTestimonials(reviewProducts);
+
         setFeatured(pRes.data.products || []);
         setCategories(cRes.data.categories?.length ? cRes.data.categories : CATEGORIES.map((c, i) => ({ ...c, _id: String(i) })));
-      } catch { }
+        setTestimonials(dbTestimonials);
+      } catch {
+        setCategories(CATEGORIES.map((c, i) => ({ ...c, _id: String(i) })));
+      }
+      setCategoriesLoading(false);
       setLoading(false);
     })();
   }, []);
@@ -644,10 +679,33 @@ lg:grid-cols-4
 gap-4
 md:gap-7">
 
-            {
-
+            {categoriesLoading ? (
+              Array.from({ length: 8 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="
+bg-white
+rounded-3xl
+overflow-hidden
+shadow-sm
+border
+border-gray-100
+animate-pulse"
+                >
+                  <div className="
+h-[180px]
+sm:h-[220px]
+md:h-[260px]
+bg-[#EAF4FB]"
+                  />
+                  <div className="p-4 md:p-5">
+                    <div className="h-5 md:h-6 w-3/4 rounded-full bg-[#E2ECF5]" />
+                    <div className="h-4 w-24 rounded-full bg-[#EEF4F8] mt-3" />
+                  </div>
+                </div>
+              ))
+            ) : (
               categories.map((cat) => (
-
                 <Link
                   key={cat._id || cat.slug}
                   to={`/products?category=${encodeURIComponent(cat._id || cat.slug || cat.name)}`}
@@ -721,8 +779,7 @@ mt-2">
                 </Link>
 
               ))
-
-            }
+            )}
 
           </div>
 
@@ -770,19 +827,13 @@ overflow-hidden
 py-24"
 
         style={{
-          background:
-            "linear-gradient(135deg,#021327 0%,#003B7A 50%,#0056A6 100%)"
+          backgroundImage: `url(${deliveringBg})`,
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'cover'
         }}>
 
-        {/* Grid background */}
-
-        <div className="
-absolute
-inset-0
-opacity-10
-bg-[linear-gradient(rgba(255,255,255,.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.1)_1px,transparent_1px)]
-bg-[size:40px_40px]"
-        />
+        <div className="absolute inset-0 bg-white/15" />
 
 
 
@@ -810,10 +861,10 @@ font-medium">
             <h2 className="
 text-5xl
 font-bold
-text-white
+text-blue-950
 mt-3">
 
-              Numbers Speak Quality
+              Delivering Quality at Scale
 
             </h2>
 
@@ -841,11 +892,11 @@ gap-8">
                              backdrop-blur-sm
                              border
                              border-white/10
-                             rounded-3xl
+                             rounded-3xl 
                              p-8
                              text-center
                              hover:-translate-y-3
-                             duration-300
+                             duration-300 bg-blue-950
                              hover:border-green-400/30">
                              
                              
@@ -1077,8 +1128,8 @@ text-gray-500">
             <h2 className="section-title">Trusted by Industries<br />Across India</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
-            {TESTIMONIALS.map((t, i) => (
-              <div key={i} className="p-7 rounded-3xl transition-all duration-300 group cursor-default"
+            {testimonials.length > 0 ? testimonials.map((t) => (
+              <div key={t.id} className="p-7 rounded-3xl transition-all duration-300 group cursor-default"
                 style={{ background: '#f8faff', border: '1px solid rgba(11,79,156,0.07)' }}
                 onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 20px 48px rgba(11,79,156,0.1)'; e.currentTarget.style.borderColor = 'rgba(11,79,156,0.15)'; }}
                 onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = ''; e.currentTarget.style.borderColor = 'rgba(11,79,156,0.07)'; }}>
@@ -1099,29 +1150,42 @@ text-gray-500">
                   <div>
                     <div className="font-semibold text-sm text-slate-800">{t.name}</div>
                     <div className="text-xs text-slate-400">{t.company}</div>
+                    <div className="text-[11px] text-slate-300 mt-0.5">{t.date}</div>
                   </div>
                 </div>
               </div>
-            ))}
+            )) : (
+              <div className="md:col-span-3 rounded-3xl border border-dashed border-slate-200 bg-white p-10 text-center text-slate-400">
+                <div className="text-4xl mb-3">Reviews</div>
+                <p className="font-semibold text-slate-500">No client reviews yet.</p>
+                <p className="text-sm mt-1">Customer reviews from your product database will appear here automatically.</p>
+              </div>
+            )}
           </div>
         </div>
       </section>
 
       {/* ── CTA BANNER ───────────────────────────────────────────────── */}
-      <section className="section-sm relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #0B4F9C 0%, #083B73 50%, #041f3d 100%)' }}>
-        <div className="absolute inset-0 bg-grid-white bg-grid" />
+      <section
+        className="section-sm relative overflow-hidden"
+        style={{
+          backgroundImage: ` url(${contactBg})`,
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'cover'
+        }}>
+        <div className="absolute inset-0 bg-grid-white bg-grid opacity-20" />
         <div className="absolute -top-20 -right-20 w-80 h-80 rounded-full pointer-events-none"
           style={{ background: 'radial-gradient(circle, rgba(34,197,94,0.15) 0%, transparent 70%)' }} />
         <div className="relative z-10 max-w-3xl mx-auto px-4 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6 text-xs font-bold tracking-widest uppercase"
             style={{ background: 'rgba(34,197,94,0.15)', border: '1px solid rgba(34,197,94,0.3)', color: '#22c55e' }}>
-            <FiZap className="w-3.5 h-3.5" /> Limited Stock on Select Items
+          Limited Stock on Select Items
           </div>
-          <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-5" style={{ letterSpacing: '-0.03em' }}>
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-blue-950 mb-5" style={{ letterSpacing: '-0.03em' }}>
             Need a Bulk Quotation?
           </h2>
-          <p className="text-lg mb-10" style={{ color: 'rgba(255,255,255,0.6)' }}>
+          <p className="text-lg mb-10 text-black" >
             Reach our sales team for customised pricing, technical specs, and delivery timelines for bulk chemical orders.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
@@ -1132,8 +1196,8 @@ text-gray-500">
             </Link>
             <a href="https://wa.me/918940448177?text=Hello%20Sri%20Bairavi%20Chemicals%2C%20send%20me%20your%20product%20list."
               target="_blank" rel="noreferrer"
-              className="btn-ghost !py-3.5 !px-8">
-              <span className="flex items-center gap-2">💬 WhatsApp Us</span>
+              className="btn-ghost !py-3.5 bg-green-700 hover:bg-green-700 !px-8">
+              <span className="flex items-center gap-2 "> WhatsApp Us</span>
             </a>
           </div>
         </div>

@@ -1,7 +1,9 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FiMail, FiPhone, FiMapPin, FiArrowRight, FiLinkedin, FiInstagram, FiTwitter } from 'react-icons/fi';
-
-const CATS = ['Industrial Chemicals','Laboratory Chemicals','Water Treatment','Solvents','Acids & Alkalis','Specialty Chemicals'];
+import logo from "../../assets/logo.jpeg"
+import { getCategories } from '../../services/api';
+import lalogo from "../../assets/la-logo.png"
 const LINKS = [
   { label: 'Home', to: '/' }, { label: 'Products', to: '/products' },
   { label: 'Contact', to: '/contact' }, { label: 'Privacy Policy', to: '/privacy-policy' },
@@ -9,6 +11,21 @@ const LINKS = [
 ];
 
 export default function Footer() {
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const { data } = await getCategories();
+        setCategories(data.categories || []);
+      } catch (error) {
+        setCategories([]);
+      }
+    };
+
+    loadCategories();
+  }, []);
+
   return (
     <footer style={{ background: '#06091a', color: '#94a3b8' }}>
       {/* Top CTA strip */}
@@ -32,8 +49,13 @@ export default function Footer() {
         {/* Brand */}
         <div className="lg:col-span-1">
           <Link to="/" className="flex items-center gap-3 mb-6 w-fit">
-            <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-white text-lg font-bold"
-              style={{ background: 'linear-gradient(135deg,#0B4F9C,#1a70ff)' }}>⚗</div>
+            <div className="w-10 h-10 rounded-2xl overflow-hidden">
+              <img
+                src={logo}
+                alt="Logo"
+                className="w-full h-full object-cover"
+              />
+            </div>
             <div>
               <div className="font-display font-bold text-white text-sm">Sri Bairavi</div>
               <div className="text-[10px] font-bold tracking-[0.15em] uppercase" style={{ color: '#22c55e' }}>CHEMICALS</div>
@@ -60,13 +82,13 @@ export default function Footer() {
         <div>
           <h4 className="text-white font-semibold text-sm mb-5 uppercase tracking-widest text-[11px]">Categories</h4>
           <ul className="space-y-2.5">
-            {CATS.map(c => (
-              <li key={c}>
-                <Link to={`/products?category=${encodeURIComponent(c.toLowerCase())}`}
+            {categories.map(category => (
+              <li key={category._id}>
+                <Link to={`/products?category=${encodeURIComponent(category._id || category.slug || category.name)}`}
                   className="text-sm flex items-center gap-2 transition-colors hover:text-white group"
                   style={{ color: 'rgba(255,255,255,0.4)' }}>
                   <span className="w-1 h-1 rounded-full transition-all group-hover:w-3" style={{ background: '#22c55e' }} />
-                  {c}
+                  {category.name}
                 </Link>
               </li>
             ))}
@@ -122,10 +144,28 @@ export default function Footer() {
           <p className="text-xs" style={{ color: 'rgba(255,255,255,0.25)' }}>
             © {new Date().getFullYear()} Sri Bairavi Chemicals. All rights reserved.
           </p>
-          <div className="flex items-center gap-1.5 text-xs" style={{ color: 'rgba(255,255,255,0.25)' }}>
-            <span>Crafted with</span>
-            <span style={{ color: '#22c55e' }}>♥</span>
-            <span>for industrial excellence</span>
+          <div
+            className="flex items-center gap-2 text-xs"
+            style={{ color: "rgba(255,255,255,0.6)" }}
+          >
+            {/* Logo */}
+            <img
+              src={lalogo}
+              alt="Least Action Company"
+              className="w-8 h-8 object-contain"
+            />
+
+            <span>Design & Development by</span>
+
+            <a
+              href="https://leastactioncompany.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold hover:underline transition-all text-white"
+              
+            >
+              Least Action Company
+            </a>
           </div>
         </div>
       </div>
