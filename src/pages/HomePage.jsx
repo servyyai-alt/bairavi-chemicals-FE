@@ -888,7 +888,7 @@ gap-8">
                   key={index}
 
                   className="
-                             bg-white/5
+                            
                              backdrop-blur-sm
                              border
                              border-white/10
