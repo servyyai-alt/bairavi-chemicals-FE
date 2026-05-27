@@ -146,12 +146,12 @@ export default function ProfilePage() {
             <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Orders</p>
             <p className="mt-1 text-lg font-bold text-gray-900">{orders.length}</p>
           </div>
-          <div className="rounded-2xl bg-gray-50 px-4 py-3 text-center">
-            <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Active</p>
+          {/* <div className="rounded-2xl bg-gray-50 px-4 py-3 text-center">
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Order Status</p>
             <p className="mt-1 text-lg font-bold text-gray-900">
               {orders.filter(order => !['delivered', 'cancelled'].includes(order.orderStatus)).length}
             </p>
-          </div>
+          </div> */}
         </div>
       </div>
 

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { FiMail, FiPhone, FiMapPin, FiSend, FiClock, FiArrowRight } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import { createInquiry } from '../services/api';
+import contactBg from "../assets/contact_bg.png";
 
 export default function ContactPage() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
@@ -27,27 +28,51 @@ export default function ContactPage() {
     <div style={{ background: '#f8faff', minHeight: '100vh' }}>
 
       {/* Hero */}
-      <section className="relative py-20 overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #020f1e 0%, #083B73 60%, #0B4F9C 100%)' }}>
-        <div className="absolute inset-0 bg-grid-white bg-grid" />
-        <div className="absolute -top-16 -left-16 w-64 h-64 rounded-full pointer-events-none"
-          style={{ background: 'radial-gradient(circle, rgba(34,197,94,0.12) 0%, transparent 70%)' }} />
-        <div className="relative z-10 text-center max-w-2xl mx-auto px-4">
-          <span className="section-label mb-4 block justify-center">Contact Us</span>
-          <h1 className="font-display text-5xl font-bold text-white mb-4" style={{ letterSpacing: '-0.03em' }}>
-            Let's Talk Chemicals
-          </h1>
-          <p className="text-lg" style={{ color: 'rgba(255,255,255,0.55)' }}>
-            Send us your inquiry or bulk order requirements. Our experts respond within 24 hours.
-          </p>
-        </div>
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0,20 C480,40 960,0 1440,20 L1440,40 L0,40 Z" fill="#f8faff" />
-          </svg>
-        </div>
-      </section>
+   <section
+  className="relative py-24 overflow-hidden"
+  style={{
+    backgroundImage: `url(${contactBg})`,
+    backgroundSize: "cover",      // change
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+    minHeight: "420px",
+  }}
+>
 
+  {/* Dark overlay */}
+
+
+  <div className="relative z-10 text-center max-w-3xl mx-auto px-4">
+
+    <span className="text-green-400 uppercase tracking-[4px] text-sm font-semibold">
+      Contact Us
+    </span>
+
+    <h1
+      className="text-5xl font-bold text-blue-900 mt-4 mb-4"
+      style={{ letterSpacing: "-0.03em" }}
+    >
+      Let's Talk Chemicals
+    </h1>
+
+    <p className="text-blue-800 text-lg">
+      Send us your inquiry or bulk order requirements.
+      Our experts respond within 24 hours.
+    </p>
+
+  </div>
+
+  {/* bottom wave */}
+  <div className="absolute bottom-0 left-0 w-full">
+    <svg viewBox="0 0 1440 80">
+      <path
+        fill="#f8faff"
+        d="M0,40 C450,100 950,0 1440,60 L1440,80 L0,80 Z"
+      />
+    </svg>
+  </div>
+
+</section>
       <div className="max-w-6xl mx-auto px-4 py-14 grid md:grid-cols-5 gap-8">
 
         {/* Info column */}

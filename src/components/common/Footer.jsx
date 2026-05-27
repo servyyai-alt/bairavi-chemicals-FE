@@ -164,7 +164,7 @@ export default function Footer() {
               className="font-semibold hover:underline transition-all text-white"
               
             >
-              Least Action Company
+              Least Action Company Pvt Ltd
             </a>
           </div>
         </div>

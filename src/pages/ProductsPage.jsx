@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { FiSearch, FiFilter, FiX, FiSliders } from 'react-icons/fi';
 import { getProducts, getCategories } from '../services/api';
 import ProductCard from '../components/common/ProductCard';
+import productsBg from "../assets/products_bg.png";
 
 const SORTS = [
   { value: 'newest', label: 'Newest First' },
@@ -72,40 +73,72 @@ export default function ProductsPage() {
     <div style={{ background: '#f8faff', minHeight: '100vh' }}>
 
       {/* Header */}
-      <section className="relative py-16 overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #020f1e 0%, #083B73 60%, #0B4F9C 100%)' }}>
-        <div className="absolute inset-0 bg-grid-white bg-grid" />
-        <div className="relative z-10 max-w-7xl mx-auto px-4">
-          <span className="section-label mb-4 block">Catalogue</span>
-          <h1 className="font-display text-4xl md:text-5xl font-bold text-white mb-3" style={{ letterSpacing: '-0.03em' }}>
-            Sri Baivari Chemical Products
-          </h1>
-          <p className="text-slate-300 mb-8 text-lg">{total > 0 ? `${total} products available` : 'Loading catalogue…'}</p>
+  <section
+  className="relative py-24 overflow-hidden"
+  style={{
+    backgroundImage: `url(${productsBg})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+  }}
+>
+  {/* Dark overlay */}
+\
+  <div className="relative z-10 max-w-7xl mx-auto px-4">
 
-          {/* Search bar */}
-          <form onSubmit={e => { e.preventDefault(); setParam('search', search); }} className="max-w-xl">
-            <div className="flex gap-3">
-              <div className="relative flex-1">
-                <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
-                <input value={search} onChange={e => setSearch(e.target.value)}
-                  placeholder="Search by product name, SKU, or brand…"
-                  className="w-full pl-12 pr-4 py-3.5 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-accent-green bg-white"
-                />
-                {search && (
-                  <button type="button" onClick={() => { setSearch(''); setParam('search', ''); }}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
-                    <FiX className="w-4 h-4" />
-                  </button>
-                )}
-              </div>
-              <button type="submit" className="btn-green !py-3.5 !px-6"><span>Search</span></button>
-            </div>
-          </form>
+    <span className="text-green-400 uppercase tracking-[4px] font-semibold text-sm">
+      Catalogue
+    </span>
+
+    <h1
+      className="text-5xl md:text-6xl font-bold text-blue-900 mt-4 mb-4"
+      style={{ letterSpacing: "-0.03em" }}
+    >
+      Sri Bairavi Chemical Products
+    </h1>
+
+    <p className="text-blue-800 text-lg mb-8">
+      {total > 0
+        ? `${total} products available`
+        : "Loading catalogue..."}
+    </p>
+
+    {/* Search */}
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        setParam("search", search);
+      }}
+      className="max-w-xl"
+    >
+      <div className="flex gap-3">
+
+        <div className="relative flex-1">
+          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+
+          <input
+            value={search}
+            onChange={(e)=>setSearch(e.target.value)}
+            placeholder="Search products..."
+            className="w-full pl-12 py-4 rounded-2xl bg-white"
+          />
         </div>
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 40" fill="none"><path d="M0,20 C480,40 960,0 1440,20 L1440,40 L0,40 Z" fill="#f8faff"/></svg>
-        </div>
-      </section>
+
+        <button
+          type="submit"
+          className="bg-green-600 text-white px-8 rounded-2xl"
+        >
+          Search
+        </button>
+
+      </div>
+    </form>
+
+  </div>
+
+  
+
+</section>
 
       <div className="max-w-7xl mx-auto px-4 py-8 flex gap-7">
 
